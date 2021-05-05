@@ -1,0 +1,21 @@
+import ErrorData from "./error/ErrorData";
+import ErrorDataAdapted from "./error/ErrorDataAdapted";
+import ErrorDataConstraint from "./error/ErrorDataConstraint";
+import ErrorDataEmpty from "./error/ErrorDataEmpty";
+import ErrorDataIgnored from "./error/ErrorDataIgnored";
+import ErrorDataInternal from "./error/ErrorDataInternal";
+import ErrorDataOption from "./error/ErrorDataOption";
+import ErrorDataRequired from "./error/ErrorDataRequired";
+import ErrorDataType from "./error/ErrorDataType";
+declare const _default: {
+    Base: typeof ErrorData;
+    Adapted: typeof ErrorDataAdapted;
+    Constraint: typeof ErrorDataConstraint;
+    Empty: typeof ErrorDataEmpty;
+    Ignored: typeof ErrorDataIgnored;
+    Option: typeof ErrorDataOption;
+    Required: typeof ErrorDataRequired;
+    Type: typeof ErrorDataType;
+    Internal: typeof ErrorDataInternal;
+};
+export default _default;

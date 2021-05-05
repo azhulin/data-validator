@@ -1,0 +1,18 @@
+{
+  "name": "@azhulin/data-validator",
+  "version": "1.0.0",
+  "description": "The data validator.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/azhulin/data-validator.git"
+  },
+  "dependencies": {
+    "@azhulin/plugin-manager": "git+https://github.com/azhulin/plugin-manager.git#develop"
+  }
+}
