@@ -58,7 +58,7 @@ export type Definition = {
 export type Schema = Record<string, string | Definition>
 
 export type Settings = {
-  config: Config
+  config?: Config
   path?: Path
   storage?: Record<string, unknown>
   source?: unknown

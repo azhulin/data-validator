@@ -51,7 +51,7 @@ export declare type Definition = {
 } & Config;
 export declare type Schema = Record<string, string | Definition>;
 export declare type Settings = {
-    config: Config;
+    config?: Config;
     path?: Path;
     storage?: Record<string, unknown>;
     source?: unknown;
