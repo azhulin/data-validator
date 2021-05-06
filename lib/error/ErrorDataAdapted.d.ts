@@ -1,9 +1,9 @@
 import type { Path } from "../type";
-import ErrorData from "./ErrorData";
+import ErrorDataExpected from "./ErrorDataExpected";
 /**
  * The data adapted error.
  */
-export default class ErrorDataAdapted extends ErrorData {
+export default class ErrorDataAdapted extends ErrorDataExpected {
     /**
      * {@inheritdoc}
      */

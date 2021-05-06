@@ -1,10 +1,10 @@
 import type { Path } from "../type"
-import ErrorData from "./ErrorData"
+import ErrorDataExpected from "./ErrorDataExpected"
 
 /**
  * The data constraint error.
  */
-export default class ErrorDataConstraint extends ErrorData {
+export default class ErrorDataConstraint extends ErrorDataExpected {
 
   /**
    * {@inheritdoc}

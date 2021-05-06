@@ -1,10 +1,10 @@
 import type { Path } from "../type";
-import ErrorData from "./ErrorData";
+import ErrorDataExpected from "./ErrorDataExpected";
 import Handler from "../Handler";
 /**
  * The data type error.
  */
-export default class ErrorDataType extends ErrorData {
+export default class ErrorDataType extends ErrorDataExpected {
     /**
      * {@inheritdoc}
      */

@@ -8,9 +8,9 @@ import * as Util from "./Util"
 import ErrorDataConstraint from "./error/ErrorDataConstraint"
 import ErrorDataEmpty from "./error/ErrorDataEmpty"
 import ErrorDataIgnored from "./error/ErrorDataIgnored"
-import ErrorDataInternal from "./error/ErrorDataInternal"
 import ErrorDataRequired from "./error/ErrorDataRequired"
 import ErrorDataType from "./error/ErrorDataType"
+import ErrorDataUnexpected from "./error/ErrorDataUnexpected"
 
 /**
  * The data validator class.
@@ -220,7 +220,7 @@ export default abstract class Handler {
     const { create, update, integrate } = Operation
     const { operation = create, data } = context ?? {}
     if ([update, integrate].includes(operation) && !data) {
-      throw new ErrorDataInternal(`Context data is required for the ${operation} operation.`)
+      throw new ErrorDataUnexpected(`Context data is required for the ${operation} operation.`)
     }
     return {
       ...context,
@@ -279,7 +279,7 @@ export default abstract class Handler {
         && this.processorLibrary[processor]
         && (processor = this.processorLibrary[processor])
       if ("function" !== typeof processor) {
-        throw new ErrorDataInternal(`${this.name} processor '${processor}' is invalid.`)
+        throw new ErrorDataUnexpected(`${this.name} processor '${processor}' is invalid.`)
       }
       data = await processor(data, context)
     }
@@ -318,7 +318,7 @@ export default abstract class Handler {
    * Checks a data constraint.
    */
   protected async checkConstraint(constraint: string, data: unknown, context: Context): Promise<Constraint.Result> {
-    throw new ErrorDataInternal(`${this.name} constraint '${constraint}' is invalid.`)
+    throw new ErrorDataUnexpected(`${this.name} constraint '${constraint}' is invalid.`)
   }
 
   /**

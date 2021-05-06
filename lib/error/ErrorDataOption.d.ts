@@ -1,10 +1,10 @@
 import type { Path } from "../type";
 import { Keys, KeyType, Options } from "../handler/Option";
-import ErrorData from "./ErrorData";
+import ErrorDataExpected from "./ErrorDataExpected";
 /**
  * The data option error.
  */
-export default class ErrorDataOption extends ErrorData {
+export default class ErrorDataOption extends ErrorDataExpected {
     /**
      * {@inheritdoc}
      */

@@ -1,5 +1,5 @@
 import type { Path } from "./type"
-import ErrorDataInternal from "./error/ErrorDataInternal"
+import ErrorDataUnexpected from "./error/ErrorDataUnexpected"
 
 /**
  * Determines whether the value is a string.
@@ -53,13 +53,13 @@ export const set = (data: unknown, ...fields: any[]): unknown => {
       if ("string" === typeof key && !isObject(value)
           || isIndex(key) && !Array.isArray(value)
           || !(key in (value as object))) {
-        throw new ErrorDataInternal("Can not set data, because specified path does not exist.")
+        throw new ErrorDataUnexpected("Can not set data, because specified path does not exist.")
       }
       value = value[key]
     }
     if ("string" === typeof last && !isObject(value)
         || isIndex(last) && !Array.isArray(value)) {
-      throw new ErrorDataInternal("Can not set data, because value at specified path is invalid.")
+      throw new ErrorDataUnexpected("Can not set data, because value at specified path is invalid.")
     }
     undefined === item ? delete value[last] : value[last] = item
   }
@@ -75,7 +75,7 @@ export const pathResolve = (path: Path, field: string = ""): Path => {
   const up = match ? +(match[1] ?? 1) : 0
   field = field.replace(regexp, "")
   if (up > path.length) {
-    throw new ErrorDataInternal("Unable to resolve the path, because specified offset is out of bounds.")
+    throw new ErrorDataUnexpected("Unable to resolve the path, because specified offset is out of bounds.")
   }
   return [
     ...path.slice(0, up ? -up : undefined),
@@ -91,7 +91,7 @@ const fieldToPath = (field?: string): Path => {
     return []
   }
   if (!field.match(/^((\.([0-9a-z]+_?)*[0-9a-z])|(\[[0-9]+\]))+$/)) {
-    throw new ErrorDataInternal(`Unable to convert field to path, because specified field '${field}' is invalid.`)
+    throw new ErrorDataUnexpected(`Unable to convert field to path, because specified field '${field}' is invalid.`)
   }
   return field.split(/(\.[^.\[]+|\[[^\]]+\])/).filter(item => item)
     .map(item => "." === item[0] ? item.substr(1) : +item.substr(1, 1))
