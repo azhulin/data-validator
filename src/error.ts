@@ -1,21 +1,13 @@
-import ErrorData from "./error/ErrorData"
-import ErrorDataAdapted from "./error/ErrorDataAdapted"
-import ErrorDataConstraint from "./error/ErrorDataConstraint"
-import ErrorDataEmpty from "./error/ErrorDataEmpty"
-import ErrorDataIgnored from "./error/ErrorDataIgnored"
-import ErrorDataInternal from "./error/ErrorDataInternal"
-import ErrorDataOption from "./error/ErrorDataOption"
-import ErrorDataRequired from "./error/ErrorDataRequired"
-import ErrorDataType from "./error/ErrorDataType"
+import Base from "./error/ErrorData"
+import Adapted from "./error/ErrorDataAdapted"
+import Constraint from "./error/ErrorDataConstraint"
+import Empty from "./error/ErrorDataEmpty"
+import Ignored from "./error/ErrorDataIgnored"
+import Internal from "./error/ErrorDataInternal"
+import Option from "./error/ErrorDataOption"
+import Required from "./error/ErrorDataRequired"
+import Type from "./error/ErrorDataType"
 
-export default {
-  Base: ErrorData,
-  Adapted: ErrorDataAdapted,
-  Constraint: ErrorDataConstraint,
-  Empty: ErrorDataEmpty,
-  Ignored: ErrorDataIgnored,
-  Option: ErrorDataOption,
-  Required: ErrorDataRequired,
-  Type: ErrorDataType,
-  Internal: ErrorDataInternal,
+export {
+  Base, Internal, Adapted, Constraint, Empty, Ignored, Option, Required, Type
 }
