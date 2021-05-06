@@ -181,7 +181,7 @@ export default abstract class Handler {
    */
   public async validate(data: unknown, baseContext?: BaseContext): Promise<unknown> {
     this.isRoot() && this.reset()
-    const context = this.getContext(baseContext)
+    const context = await this.getContext(baseContext)
     undefined === this.source && (this.source = data)
     if (!await this.isAcceptable(context)) {
       !this.isOmitted(data) && this.inSource()
@@ -216,7 +216,7 @@ export default abstract class Handler {
   /**
    * Returns the context.
    */
-  protected getContext(context?: BaseContext): Context {
+  protected async getContext(context?: BaseContext): Promise<Context> {
     const { create, update, integrate } = Operation
     const { operation = create, data } = context ?? {}
     if ([update, integrate].includes(operation) && !data) {

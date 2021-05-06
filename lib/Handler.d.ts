@@ -104,7 +104,7 @@ export default abstract class Handler {
     /**
      * Returns the context.
      */
-    protected getContext(context?: BaseContext): Context;
+    protected getContext(context?: BaseContext): Promise<Context>;
     /**
      * Determines whether the data is valid.
      */
