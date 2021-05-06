@@ -14,5 +14,8 @@
   },
   "dependencies": {
     "@azhulin/plugin-manager": "git+https://github.com/azhulin/plugin-manager.git#develop"
+  },
+  "devDependencies": {
+    "@types/node": ""
   }
 }
