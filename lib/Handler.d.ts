@@ -82,9 +82,9 @@ export default abstract class Handler {
      */
     protected warning: Error[];
     /**
-     * The plugin manager.
+     * The manager.
      */
-    protected pluginManager: PluginManager;
+    protected manager: PluginManager;
     /**
      * Normalizes the data definition.
      */

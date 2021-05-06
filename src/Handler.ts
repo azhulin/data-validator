@@ -121,9 +121,9 @@ export default abstract class Handler {
   protected warning: Error[] = []
 
   /**
-   * The plugin manager.
+   * The manager.
    */
-  protected pluginManager: PluginManager
+  protected manager: PluginManager
 
   /**
    * Normalizes the data definition.
@@ -157,13 +157,13 @@ export default abstract class Handler {
       ...this.custom.postprocessors ?? [],
       ...config.postprocessors ?? [],
     ]
-    const { path, source, result, storage, warning, pluginManager } = settings
+    const { path, source, result, storage, warning, manager } = settings
     this.path = path ?? this.path
     this.source = source
     this.result = result
     this.storage = storage ?? this.storage
     this.warning = warning ?? this.warning
-    this.pluginManager = pluginManager
+    this.manager = manager
   }
 
   /**
@@ -392,11 +392,11 @@ export default abstract class Handler {
    */
   protected initHandler(definition: string | Definition, path: Path): Handler {
     const { type, ...config } = Handler.definitionNormalize(definition)
-    const { source, result, storage, warning, pluginManager } = this
+    const { source, result, storage, warning, manager } = this
     const settings: Settings = {
-      config, path, source, result, storage, warning, pluginManager,
+      config, path, source, result, storage, warning, manager,
     }
-    return this.pluginManager.instance(type, settings)
+    return this.manager.instance(type, settings)
   }
 
   /**

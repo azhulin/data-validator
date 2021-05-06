@@ -57,7 +57,7 @@ export declare type Settings = {
     source?: unknown;
     result?: unknown;
     warning?: Error[];
-    pluginManager: import("@azhulin/plugin-manager").default;
+    manager: import("@azhulin/plugin-manager").default;
 };
 export interface BaseContext {
     operation?: Operation;
