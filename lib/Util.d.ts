@@ -23,3 +23,11 @@ export declare const set: (data: unknown, ...fields: any[]) => unknown;
  * Returns the modified path.
  */
 export declare const pathResolve: (path: Path, field?: string) => Path;
+/**
+ * Converts a string to a data path.
+ */
+export declare const fieldToPath: (field?: string) => Path;
+/**
+ * Converts a data path to a string.
+ */
+export declare const pathToField: (path: Path) => string;

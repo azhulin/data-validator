@@ -86,7 +86,7 @@ export const pathResolve = (path: Path, field: string = ""): Path => {
 /**
  * Converts a string to a data path.
  */
-const fieldToPath = (field?: string): Path => {
+export const fieldToPath = (field?: string): Path => {
   if (!field) {
     return []
   }
@@ -96,3 +96,9 @@ const fieldToPath = (field?: string): Path => {
   return field.split(/(\.[^.\[]+|\[[^\]]+\])/).filter(item => item)
     .map(item => "." === item[0] ? item.substr(1) : +item.substr(1, 1))
 }
+
+/**
+ * Converts a data path to a string.
+ */
+export const pathToField = (path: Path): string =>
+  path.map(item => "string" === typeof item ? `.${item}` : `[${item}]`).join("")
