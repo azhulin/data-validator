@@ -83,7 +83,7 @@ export default abstract class Handler {
     /**
      * Resets the handler state.
      */
-    protected reset(): void;
+    protected reset(data: unknown): void;
     /**
      * Returns validated data.
      */

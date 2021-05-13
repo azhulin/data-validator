@@ -142,20 +142,21 @@ export default abstract class Handler {
   /**
    * Resets the handler state.
    */
-  protected reset(): void {
-    this.source = undefined
-    this.result = undefined
-    this.storage = {}
-    this.warning = []
+  protected reset(data: unknown): void {
+    if (this.isRoot()) {
+      this.source = data
+      this.result = undefined
+      this.storage = {}
+      this.warning = []
+    }
   }
 
   /**
    * Returns validated data.
    */
   public async validate(data: unknown, baseContext?: BaseContext): Promise<unknown> {
-    this.isRoot() && this.reset()
+    this.reset(data)
     const context = await this.getContext(baseContext)
-    undefined === this.source && (this.source = data)
     if (!await this.isAcceptable(context)) {
       !this.isOmitted(data) && this.inSource()
         && this.warn(new ErrorDataIgnored(this.path))
