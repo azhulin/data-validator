@@ -70,6 +70,9 @@ export const set = (data: unknown, ...fields: any[]): unknown => {
  * Returns the modified path.
  */
 export const pathResolve = (path: Path, field: string = ""): Path => {
+  if ("*" === field) {
+    return []
+  }
   const regexp = /^\^([0-9]+)?/
   const match = field.match(regexp)
   const up = match ? +(match[1] ?? 1) : 0

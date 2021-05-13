@@ -204,7 +204,9 @@ export default abstract class Handler {
       [operation]: true,
       default: this.default,
       path: this.path,
-      current: field =>
+      source: field =>
+        Util.extract(this.source, Util.pathResolve(this.path, field)),
+      result: field =>
         Util.extract(this.result, Util.pathResolve(this.path, field)),
       original: field =>
         Util.extract(data, Util.pathResolve(this.path, field)),

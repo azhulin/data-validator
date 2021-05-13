@@ -69,7 +69,8 @@ export interface Context extends BaseContext {
     integrate: boolean;
     default: Default;
     path: Path;
-    current: (field?: string) => unknown;
+    source: (field?: string) => unknown;
+    result: (field?: string) => unknown;
     original: (field?: string) => unknown;
     storage: (key: string, value?: unknown) => unknown;
 }
