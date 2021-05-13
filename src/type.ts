@@ -42,7 +42,7 @@ export namespace Constraint {
 export type Constraint = Constraint.Static | Constraint.Dynamic
 
 export type Config = {
-  accept?: Property<boolean, Context>
+  input?: Property<boolean, Context>
   require?: Property<boolean, Context>
   default?: Partial<Default>
   preprocessors?: Processor[]

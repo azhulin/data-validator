@@ -38,7 +38,7 @@ export declare namespace Constraint {
 }
 export declare type Constraint = Constraint.Static | Constraint.Dynamic;
 export declare type Config = {
-    accept?: Property<boolean, Context>;
+    input?: Property<boolean, Context>;
     require?: Property<boolean, Context>;
     default?: Partial<Default>;
     preprocessors?: Processor[];

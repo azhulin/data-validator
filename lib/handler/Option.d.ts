@@ -54,7 +54,8 @@ export declare class Handler extends Data.Handler {
     static optionKeys(options: Options): Keys;
 }
 export declare function conf(config?: Config): {
-    accept?: Data.Property<boolean, Data.Context>; /**
+    input?: Data.Property<boolean, Data.Context>;
+    /**
      * {@inheritdoc}
      */
     require?: Data.Property<boolean, Data.Context>;

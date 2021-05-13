@@ -21,9 +21,9 @@ export default abstract class Handler {
      */
     protected default: Default;
     /**
-     * Whether to accept the input data.
+     * Whether to accept the data from input.
      */
-    protected accept: Property<boolean, Context>;
+    protected input: Property<boolean, Context>;
     /**
      * Whether the data is required.
      */
@@ -137,9 +137,9 @@ export default abstract class Handler {
      */
     protected isEmpty(data: unknown): boolean;
     /**
-     * Returns "accept" flag value.
+     * Returns "input" flag value.
      */
-    protected isAcceptable(context: Context): Promise<boolean>;
+    protected isInputable(context: Context): Promise<boolean>;
     /**
      * Returns "require" flag value.
      */

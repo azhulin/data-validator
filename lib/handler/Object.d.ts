@@ -51,7 +51,7 @@ export declare class Handler extends Data.Handler {
     protected getHandler(key: string): Data.Handler;
 }
 export declare function conf(config: Config): {
-    accept?: Data.Property<boolean, Data.Context>;
+    input?: Data.Property<boolean, Data.Context>;
     require?: Data.Property<boolean, Data.Context>;
     default?: Partial<Data.Default>;
     preprocessors?: Data.Processor[];

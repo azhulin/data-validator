@@ -43,9 +43,9 @@ export default abstract class Handler {
   }
 
   /**
-   * Whether to accept the input data.
+   * Whether to accept the data from input.
    */
-  protected accept: Property<boolean, Context> = true
+  protected input: Property<boolean, Context> = true
 
   /**
    * Whether the data is required.
@@ -115,7 +115,7 @@ export default abstract class Handler {
    * Constructor for the Handler object.
    */
   public constructor({ config = {}, path, source, result, storage, warnings }: Settings) {
-    this.accept = config.accept ?? this.accept
+    this.input = config.input ?? this.input
     this.require = config.require ?? this.require
     this.default = { ...this.default, ...config.default }
     this.custom.preprocessors = [
@@ -155,7 +155,7 @@ export default abstract class Handler {
   public async validate(data: unknown, baseContext?: BaseContext): Promise<unknown> {
     this.reset(data)
     const context = await this.getContext(baseContext)
-    if (!await this.isAcceptable(context)) {
+    if (!await this.isInputable(context)) {
       !this.isOmitted(data) && this.inSource()
         && this.warn(new ErrorDataIgnored(this.path))
       data = await this.getDefault(context)
@@ -324,10 +324,10 @@ export default abstract class Handler {
   }
 
   /**
-   * Returns "accept" flag value.
+   * Returns "input" flag value.
    */
-  protected async isAcceptable(context: Context): Promise<boolean> {
-    return this.getProperty<boolean, Context>("accept", context)
+  protected async isInputable(context: Context): Promise<boolean> {
+    return this.getProperty<boolean, Context>("input", context)
   }
 
   /**
