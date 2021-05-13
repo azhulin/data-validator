@@ -55,7 +55,7 @@ export declare type Settings = {
     storage?: Record<string, unknown>;
     source?: unknown;
     result?: unknown;
-    warning?: Error[];
+    warnings?: Error[];
 };
 export interface BaseContext {
     operation?: Operation;

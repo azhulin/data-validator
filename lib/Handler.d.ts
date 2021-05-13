@@ -75,11 +75,11 @@ export default abstract class Handler {
     /**
      * An array of collected during data handling warnings.
      */
-    protected warning: Error[];
+    warnings: Error[];
     /**
      * Constructor for the Handler object.
      */
-    constructor(settings: Settings);
+    constructor({ config, path, source, result, storage, warnings }: Settings);
     /**
      * Resets the handler state.
      */
@@ -164,8 +164,4 @@ export default abstract class Handler {
      * Adds a warning.
      */
     protected warn(error: Error): void;
-    /**
-     * Returns an array of collected during data handling warnings.
-     */
-    get warnings(): Error[];
 }

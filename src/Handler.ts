@@ -109,13 +109,12 @@ export default abstract class Handler {
   /**
    * An array of collected during data handling warnings.
    */
-  protected warning: Error[] = []
+  public warnings: Error[] = []
 
   /**
    * Constructor for the Handler object.
    */
-  public constructor(settings: Settings) {
-    const config = settings.config ?? {}
+  public constructor({ config = {}, path, source, result, storage, warnings }: Settings) {
     this.accept = config.accept ?? this.accept
     this.require = config.require ?? this.require
     this.default = { ...this.default, ...config.default }
@@ -131,12 +130,11 @@ export default abstract class Handler {
       ...this.custom.postprocessors ?? [],
       ...config.postprocessors ?? [],
     ]
-    const { path, source, result, storage, warning } = settings
     this.path = path ?? this.path
     this.source = source
     this.result = result
     this.storage = storage ?? this.storage
-    this.warning = warning ?? this.warning
+    this.warnings = warnings ?? this.warnings
   }
 
   /**
@@ -147,7 +145,7 @@ export default abstract class Handler {
       this.source = data
       this.result = undefined
       this.storage = {}
-      this.warning = []
+      this.warnings = []
     }
   }
 
@@ -368,9 +366,9 @@ export default abstract class Handler {
    */
   protected initHandler(definition: Definition, path: Path): Handler {
     const { Handler, ...config } = definition
-    const { source, result, storage, warning } = this
+    const { source, result, storage, warnings } = this
     const settings: Settings = {
-      config, path, source, result, storage, warning,
+      config, path, source, result, storage, warnings,
     }
     return new Handler(settings)
   }
@@ -379,14 +377,7 @@ export default abstract class Handler {
    * Adds a warning.
    */
   protected warn(error: Error): void {
-    this.warning.push(error)
-  }
-
-  /**
-   * Returns an array of collected during data handling warnings.
-   */
-  public get warnings(): Error[] {
-    return this.warning
+    this.warnings.push(error)
   }
 
 }
