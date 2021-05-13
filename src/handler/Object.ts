@@ -1,15 +1,15 @@
 import * as Data from ".."
 
 export type Config = Data.Config & {
-  schema?: Data.Schema
+  schema: Data.Schema
   reduce?: boolean
 }
-type Obj = Record<string, unknown>
+type Struct = Record<string, unknown>
 
 /**
  * The object data handler class.
  */
-export default class ObjectHandler extends Data.Handler {
+export class Handler extends Data.Handler {
 
   /**
    * {@inheritdoc}
@@ -44,7 +44,7 @@ export default class ObjectHandler extends Data.Handler {
    */
   public constructor(settings: Data.Settings) {
     super(settings)
-    const config: Config = settings.config ?? {}
+    const config = settings.config as Config
     this.schemaRaw = config.schema ?? this.schemaRaw
     this.reduce = config.reduce ?? this.reduce
   }
@@ -66,10 +66,10 @@ export default class ObjectHandler extends Data.Handler {
   /**
    * {@inheritdoc}
    */
-  protected async process(data: Obj, context: Data.Context): Promise<Obj | null> {
+  protected async process(data: Struct, context: Data.Context): Promise<Struct | null> {
     Object.keys(data).filter(key => !(key in this.schema))
       .forEach(key => this.warn(new Data.Error.Ignored([...this.path, key])))
-    const result: Obj = {}
+    const result: Struct = {}
     this.result = Data.Util.set(this.result, this.path, result)
     for (const key of Object.keys(this.schema)) {
       result[key] = await this.getHandler(key).validate(data[key], context)
@@ -77,9 +77,9 @@ export default class ObjectHandler extends Data.Handler {
     data = result
     if (this.reduce && Object.values(result).every(value => null === value)
         && !await this.isRequired(context)) {
-      data = await this.getDefault(context) as Obj
+      data = await this.getDefault(context) as Struct
     }
-    return super.process(data, context) as Promise<Obj | null>
+    return super.process(data, context) as Promise<Struct | null>
   }
 
   /**
@@ -91,4 +91,5 @@ export default class ObjectHandler extends Data.Handler {
 
 }
 
-export { ObjectHandler as Handler }
+export function conf(config: Config) { return { Handler, ...config } }
+export function init(config: Config) { return new Handler({ config }) }

@@ -44,12 +44,11 @@ export declare type Config = {
     preprocessors?: Processor[];
     constraints?: Constraint[];
     postprocessors?: Processor[];
-    [key: string]: unknown;
 };
 export declare type Definition = {
-    type: string;
+    Handler: new (settings: Settings) => any;
 } & Config;
-export declare type Schema = Record<string, string | Definition>;
+export declare type Schema = Record<string, Definition>;
 export declare type Settings = {
     config?: Config;
     path?: Path;
@@ -57,11 +56,11 @@ export declare type Settings = {
     source?: unknown;
     result?: unknown;
     warning?: Error[];
-    manager: import("@azhulin/plugin-manager").default;
 };
 export interface BaseContext {
     operation?: Operation;
     data?: unknown;
+    [key: string]: unknown;
 }
 export interface Context extends BaseContext {
     operation: Operation;

@@ -11,11 +11,5 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/azhulin/data-validator.git"
-  },
-  "dependencies": {
-    "@azhulin/plugin-manager": "git+https://github.com/azhulin/plugin-manager.git#develop"
-  },
-  "devDependencies": {
-    "@types/node": ""
   }
 }

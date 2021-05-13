@@ -3,7 +3,7 @@ import ErrorData from "./ErrorData"
 /**
  * The unexpected data error.
  *
- * Errors not related to the data validation itself, e.g. requesting a non-existing data handler.
+ * Errors not related to the data validation itself, e.g. checking a non-existing data constraint.
  */
 export default class ErrorDataUnexpected extends ErrorData {
 

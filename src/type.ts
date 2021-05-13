@@ -48,14 +48,13 @@ export type Config = {
   preprocessors?: Processor[]
   constraints?: Constraint[]
   postprocessors?: Processor[]
-  [key: string]: unknown
 }
 
 export type Definition = {
-  type: string
+  Handler: new (settings: Settings) => any
 } & Config
 
-export type Schema = Record<string, string | Definition>
+export type Schema = Record<string, Definition>
 
 export type Settings = {
   config?: Config
@@ -64,12 +63,12 @@ export type Settings = {
   source?: unknown
   result?: unknown
   warning?: Error[]
-  manager: import("@azhulin/plugin-manager").default
 }
 
 export interface BaseContext {
   operation?: Operation
   data?: unknown
+  [key: string]: unknown
 }
 
 export interface Context extends BaseContext {

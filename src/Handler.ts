@@ -1,6 +1,5 @@
-import type PluginManager from "@azhulin/plugin-manager"
 import type {
-  BaseContext, Config, Constraint, Context, Default,
+  BaseContext, Constraint, Context, Default,
   Definition, Path, Processor, Property, Settings,
 } from "./type"
 import Operation from "./Operation"
@@ -44,22 +43,14 @@ export default abstract class Handler {
   }
 
   /**
-   * [!] Whether to accept the input data.
+   * Whether to accept the input data.
    */
   protected accept: Property<boolean, Context> = true
 
   /**
-   * [?] Whether the data is required.
+   * Whether the data is required.
    */
   protected require: Property<boolean, Context> = true
-
-  /**
-   * Data type modifiers.
-   */
-  protected static modifiers: Record<string, (config: Config) => void> = {
-    "!": config => config.accept = false,
-    "?": config => config.require = false,
-  }
 
   /**
    * An array of data preprocessors.
@@ -121,23 +112,6 @@ export default abstract class Handler {
   protected warning: Error[] = []
 
   /**
-   * The manager.
-   */
-  protected manager: PluginManager
-
-  /**
-   * Normalizes the data definition.
-   */
-  public static definitionNormalize(type: string | Definition, config?: Config): Definition {
-    ({ type, ...config } = "string" === typeof type ? { type, ...config ?? {} } : type)
-    while (this.modifiers[type[0]]) {
-      this.modifiers[type[0]](config)
-      type = type.substring(1)
-    }
-    return { type, ...config }
-  }
-
-  /**
    * Constructor for the Handler object.
    */
   public constructor(settings: Settings) {
@@ -157,13 +131,12 @@ export default abstract class Handler {
       ...this.custom.postprocessors ?? [],
       ...config.postprocessors ?? [],
     ]
-    const { path, source, result, storage, warning, manager } = settings
+    const { path, source, result, storage, warning } = settings
     this.path = path ?? this.path
     this.source = source
     this.result = result
     this.storage = storage ?? this.storage
     this.warning = warning ?? this.warning
-    this.manager = manager
   }
 
   /**
@@ -390,13 +363,13 @@ export default abstract class Handler {
   /**
    * Returns the data handler for specified data definition.
    */
-  protected initHandler(definition: string | Definition, path: Path): Handler {
-    const { type, ...config } = Handler.definitionNormalize(definition)
-    const { source, result, storage, warning, manager } = this
+  protected initHandler(definition: Definition, path: Path): Handler {
+    const { Handler, ...config } = definition
+    const { source, result, storage, warning } = this
     const settings: Settings = {
-      config, path, source, result, storage, warning, manager,
+      config, path, source, result, storage, warning,
     }
-    return this.manager.instance(type, settings)
+    return new Handler(settings)
   }
 
   /**

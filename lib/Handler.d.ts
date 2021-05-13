@@ -1,5 +1,4 @@
-import type PluginManager from "@azhulin/plugin-manager";
-import type { BaseContext, Config, Constraint, Context, Default, Definition, Path, Processor, Property, Settings } from "./type";
+import type { BaseContext, Constraint, Context, Default, Definition, Path, Processor, Property, Settings } from "./type";
 import Operation from "./Operation";
 /**
  * The data validator class.
@@ -22,17 +21,13 @@ export default abstract class Handler {
      */
     protected default: Default;
     /**
-     * [!] Whether to accept the input data.
+     * Whether to accept the input data.
      */
     protected accept: Property<boolean, Context>;
     /**
-     * [?] Whether the data is required.
+     * Whether the data is required.
      */
     protected require: Property<boolean, Context>;
-    /**
-     * Data type modifiers.
-     */
-    protected static modifiers: Record<string, (config: Config) => void>;
     /**
      * An array of data preprocessors.
      */
@@ -81,14 +76,6 @@ export default abstract class Handler {
      * An array of collected during data handling warnings.
      */
     protected warning: Error[];
-    /**
-     * The manager.
-     */
-    protected manager: PluginManager;
-    /**
-     * Normalizes the data definition.
-     */
-    static definitionNormalize(type: string | Definition, config?: Config): Definition;
     /**
      * Constructor for the Handler object.
      */
@@ -172,7 +159,7 @@ export default abstract class Handler {
     /**
      * Returns the data handler for specified data definition.
      */
-    protected initHandler(definition: string | Definition, path: Path): Handler;
+    protected initHandler(definition: Definition, path: Path): Handler;
     /**
      * Adds a warning.
      */

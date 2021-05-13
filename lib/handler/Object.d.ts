@@ -1,13 +1,13 @@
 import * as Data from "..";
 export declare type Config = Data.Config & {
-    schema?: Data.Schema;
+    schema: Data.Schema;
     reduce?: boolean;
 };
-declare type Obj = Record<string, unknown>;
+declare type Struct = Record<string, unknown>;
 /**
  * The object data handler class.
  */
-export default class ObjectHandler extends Data.Handler {
+export declare class Handler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
@@ -44,10 +44,22 @@ export default class ObjectHandler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
-    protected process(data: Obj, context: Data.Context): Promise<Obj | null>;
+    protected process(data: Struct, context: Data.Context): Promise<Struct | null>;
     /**
      * Returns data handler.
      */
     protected getHandler(key: string): Data.Handler;
 }
-export { ObjectHandler as Handler };
+export declare function conf(config: Config): {
+    accept?: Data.Property<boolean, Data.Context>;
+    require?: Data.Property<boolean, Data.Context>;
+    default?: Partial<Data.Default>;
+    preprocessors?: Data.Processor[];
+    constraints?: Data.Constraint[];
+    postprocessors?: Data.Processor[];
+    schema: Record<string, Data.Definition>;
+    reduce?: boolean;
+    Handler: typeof Handler;
+};
+export declare function init(config: Config): Handler;
+export {};

@@ -11,7 +11,7 @@ export declare type Options = Keys | KeysLabels;
 /**
  * The option data handler class.
  */
-export default class Option extends Data.Handler {
+export declare class Handler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
@@ -53,4 +53,17 @@ export default class Option extends Data.Handler {
      */
     static optionKeys(options: Options): Keys;
 }
-export { Option as Handler };
+export declare function conf(config?: Config): {
+    accept?: Data.Property<boolean, Data.Context>; /**
+     * {@inheritdoc}
+     */
+    require?: Data.Property<boolean, Data.Context>;
+    default?: Partial<Data.Default>;
+    preprocessors?: Data.Processor[];
+    constraints?: Data.Constraint[];
+    postprocessors?: Data.Processor[];
+    key_type?: KeyType;
+    options?: Options;
+    Handler: typeof Handler;
+};
+export declare function init(config?: Config): Handler;
