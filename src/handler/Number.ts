@@ -62,6 +62,7 @@ export class Handler extends Data.Handler {
    */
   protected isValid(data: unknown): boolean {
     return "number" === typeof data && isFinite(data)
+      && (0 !== this.decimals || Number.isInteger(data))
   }
 
   /**
