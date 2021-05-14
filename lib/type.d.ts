@@ -1,25 +1,18 @@
 export declare type Operation = import("./Operation").default;
 export declare type Path = (number | string)[];
 export declare namespace Property {
-    export type Static<T> = T;
-    export type Dynamic<T, C> = (context: C) => Static<T>;
-    export type Sync<T, C> = Static<T> | Dynamic<T, C>;
-    namespace Async {
-        type Static<T> = Promise<T>;
-        type Dynamic<T, C> = (context: C) => Promise<Property.Static<T>>;
-    }
-    export type Async<T, C> = Async.Static<T> | Async.Dynamic<T, C>;
-    export {};
+    type Static<T> = T;
+    type Dynamic<T, C> = (context: C) => T | Promise<T>;
 }
-export declare type Property<T, C> = Property.Sync<T, C> | Property.Async<T, C>;
+export declare type Property<T, C> = Property.Static<T> | Property.Dynamic<T, C>;
 declare namespace Value {
     type Primitive = undefined | null | boolean | number | string;
-    type List = (Primitive | List | Map)[];
-    type Map = {
-        [key: string]: Primitive | List | Map;
+    type Array = (Primitive | Array | Object)[];
+    type Object = {
+        [key: string]: Primitive | Array | Object;
     };
 }
-declare type Value = Value.Primitive | Value.List | Value.Map;
+export declare type Value = Value.Primitive | Value.Array | Value.Object;
 export declare type Default = {
     [key in "value" | Operation | "nulled"]: Property<Value, Context>;
 };

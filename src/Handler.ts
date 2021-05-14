@@ -327,14 +327,14 @@ export default abstract class Handler {
    * Returns "input" flag value.
    */
   protected async isInputable(context: Context): Promise<boolean> {
-    return this.getProperty<boolean, Context>("input", context)
+    return this.getProperty<boolean>("input", context)
   }
 
   /**
    * Returns "require" flag value.
    */
   protected async isRequired(context: Context): Promise<boolean> {
-    return this.getProperty<boolean, Context>("require", context)
+    return this.getProperty<boolean>("require", context)
   }
 
   /**
@@ -342,20 +342,20 @@ export default abstract class Handler {
    */
   protected async getDefault(context: Context, action?: Operation | "nulled"): Promise<unknown> {
     const property = this.default[action ?? context.operation]
-    return this.getValue<unknown | Promise<unknown>, Context>(property, context)
+    return this.getValue(property, context)
   }
 
   /**
    * Returns data handler dynamic context property value.
    */
-  protected getProperty<T, C>(key: string, context: C): T {
-    return this.getValue((this as any)[key] as Property<T, C>, context)
+  protected async getProperty<T = unknown>(key: string, context: Context): Promise<T> {
+    return this.getValue<T>((this as any)[key], context)
   }
 
   /**
    * Returns dynamic context property value.
    */
-  protected getValue<T, C>(property: Property<T, C>, context: C): T {
+  protected async getValue<T = unknown, C = Context>(property: Property<T, C>, context: C): Promise<T> {
     return "function" === typeof property
       ? (property as Property.Dynamic<T, C>)(context)
       : property as Property.Static<T>

@@ -4,22 +4,16 @@ export type Path = (number | string)[]
 
 export namespace Property {
   export type Static<T> = T
-  export type Dynamic<T, C> = (context: C) => Static<T>
-  export type Sync<T, C> = Static<T> | Dynamic<T, C>
-  namespace Async {
-    export type Static<T> = Promise<T>
-    export type Dynamic<T, C> = (context: C) => Promise<Property.Static<T>>
-  }
-  export type Async<T, C> = Async.Static<T> | Async.Dynamic<T, C>
+  export type Dynamic<T, C> = (context: C) => T | Promise<T>
 }
-export type Property<T, C> = Property.Sync<T, C> | Property.Async<T, C>
+export type Property<T, C> = Property.Static<T> | Property.Dynamic<T, C>
 
 namespace Value {
   export type Primitive = undefined | null | boolean | number | string
-  export type List = (Primitive | List | Map)[]
-  export type Map = { [key: string]: Primitive | List | Map }
+  export type Array = (Primitive | Array | Object)[]
+  export type Object = { [key: string]: Primitive | Array | Object }
 }
-type Value = Value.Primitive | Value.List | Value.Map
+export type Value = Value.Primitive | Value.Array | Value.Object
 
 export type Default = {
   [key in "value" | Operation | "nulled"]: Property<Value, Context>

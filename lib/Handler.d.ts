@@ -151,11 +151,11 @@ export default abstract class Handler {
     /**
      * Returns data handler dynamic context property value.
      */
-    protected getProperty<T, C>(key: string, context: C): T;
+    protected getProperty<T = unknown>(key: string, context: Context): Promise<T>;
     /**
      * Returns dynamic context property value.
      */
-    protected getValue<T, C>(property: Property<T, C>, context: C): T;
+    protected getValue<T = unknown, C = Context>(property: Property<T, C>, context: C): Promise<T>;
     /**
      * Returns the data handler for specified data definition.
      */
