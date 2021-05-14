@@ -22,12 +22,12 @@ export declare class Handler extends Data.Handler {
     protected isValid(data: unknown): boolean;
 }
 export declare function conf(config?: Config): {
+    Handler: typeof Handler;
     input?: Data.Property<boolean, Data.Context>;
     require?: Data.Property<boolean, Data.Context>;
     default?: Partial<Data.Default>;
     preprocessors?: Data.Processor[];
     constraints?: Data.Constraint[];
     postprocessors?: Data.Processor[];
-    Handler: typeof Handler;
 };
 export declare function init(config?: Config): Handler;

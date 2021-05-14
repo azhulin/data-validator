@@ -55,6 +55,7 @@ export declare class Handler extends Data.Handler {
     static optionKeys(options: Options): Keys;
 }
 export declare function conf(config?: Config): {
+    Handler: typeof Handler;
     input?: Data.Property<boolean, Data.Context>;
     require?: Data.Property<boolean, Data.Context>;
     default?: Partial<Data.Default>;
@@ -63,6 +64,5 @@ export declare function conf(config?: Config): {
     postprocessors?: Data.Processor[];
     key_type?: KeyType;
     options?: Options;
-    Handler: typeof Handler;
 };
 export declare function init(config?: Config): Handler;

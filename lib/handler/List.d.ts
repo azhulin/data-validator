@@ -56,6 +56,7 @@ export declare class Handler extends Data.Handler {
     protected getHandler(index?: number): Data.Handler;
 }
 export declare function conf(config: Config): {
+    Handler: typeof Handler;
     input?: Data.Property<boolean, Data.Context>;
     require?: Data.Property<boolean, Data.Context>;
     default?: Partial<Data.Default>;
@@ -63,6 +64,5 @@ export declare function conf(config: Config): {
     constraints?: Data.Constraint[];
     postprocessors?: Data.Processor[];
     item: Data.Definition;
-    Handler: typeof Handler;
 };
 export declare function init(config: Config): Handler;

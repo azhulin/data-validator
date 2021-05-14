@@ -40,6 +40,7 @@ export declare class Handler extends Data.Handler {
     protected checkConstraint(constraint: string, data: number, context: Data.Context): Promise<Data.Constraint.Result>;
 }
 export declare function conf(config?: Config): {
+    Handler: typeof Handler;
     input?: Data.Property<boolean, Data.Context>;
     require?: Data.Property<boolean, Data.Context>;
     default?: Partial<Data.Default>;
@@ -47,6 +48,5 @@ export declare function conf(config?: Config): {
     constraints?: Data.Constraint[];
     postprocessors?: Data.Processor[];
     decimals?: number;
-    Handler: typeof Handler;
 };
 export declare function init(config?: Config): Handler;
