@@ -58,7 +58,9 @@ export declare function conf(config?: Config): {
     Handler: typeof Handler;
     input?: Data.Property<boolean, Data.Context>;
     require?: Data.Property<boolean, Data.Context>;
-    default?: Partial<Data.Default>;
+    default?: Partial<Data.Default>; /**
+     * {@inheritdoc}
+     */
     preprocessors?: Data.Processor[];
     constraints?: Data.Constraint[];
     postprocessors?: Data.Processor[];

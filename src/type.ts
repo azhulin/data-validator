@@ -8,7 +8,7 @@ export namespace Property {
   export type Sync<T, C> = Static<T> | Dynamic<T, C>
   namespace Async {
     export type Static<T> = Promise<T>
-    export type Dynamic<T, C> = (context: C) => Promise<Static<T>>
+    export type Dynamic<T, C> = (context: C) => Promise<Property.Static<T>>
   }
   export type Async<T, C> = Async.Static<T> | Async.Dynamic<T, C>
 }
