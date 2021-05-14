@@ -7,15 +7,15 @@ export default abstract class Handler {
     /**
      * The ID of the data type.
      */
-    abstract readonly id: string;
+    abstract get id(): string;
     /**
      * The name of the data type.
      */
-    abstract readonly name: string;
+    abstract get name(): string;
     /**
      * The description of the data type.
      */
-    readonly description?: string;
+    get description(): string;
     /**
      * The default data.
      */

@@ -19,17 +19,17 @@ export default abstract class Handler {
   /**
    * The ID of the data type.
    */
-  public abstract readonly id: string
+  public abstract get id(): string
 
   /**
    * The name of the data type.
    */
-  public abstract readonly name: string
+  public abstract get name(): string
 
   /**
    * The description of the data type.
    */
-  public readonly description?: string
+  public get description(): string { return }
 
   /**
    * The default data.
