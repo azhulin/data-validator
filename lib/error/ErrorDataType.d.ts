@@ -1,6 +1,6 @@
 import type { Path } from "../type";
+import type Handler from "../Handler";
 import ErrorDataExpected from "./ErrorDataExpected";
-import Handler from "../Handler";
 /**
  * The data type error.
  */

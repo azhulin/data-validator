@@ -5,17 +5,17 @@ import Operation from "./Operation";
  */
 export default abstract class Handler {
     /**
-     * The user-faced ID of the data type.
+     * The ID of the data type.
      */
-    abstract id: string;
+    abstract readonly id: string;
     /**
      * The name of the data type.
      */
-    abstract name: string;
+    abstract readonly name: string;
     /**
      * The description of the data type.
      */
-    description?: string;
+    readonly description?: string;
     /**
      * The default data.
      */

@@ -14,6 +14,12 @@ export const isObject = (value: unknown): boolean =>
   value && "object" === typeof value && Object === value.constructor
 
 /**
+ * Determines whether the value is a number.
+ */
+export const isNumber = (value: unknown): boolean =>
+  "number" === typeof value && isFinite(value)
+
+/**
  * Determines whether the value is an index.
  */
 export const isIndex = (value: unknown): boolean =>

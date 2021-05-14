@@ -1,5 +1,6 @@
 import type { Path } from "../type"
-import { Keys, KeyType, Options } from "../handler/Option"
+import type { Keys, Options } from "../handler/Option"
+import type Handler from "../Handler"
 import ErrorDataExpected from "./ErrorDataExpected"
 
 /**
@@ -15,26 +16,24 @@ export default class ErrorDataOption extends ErrorDataExpected {
   /**
    * Constructor for the ErrorDataOption object.
    */
-  public constructor(path: Path, options: Options, keyType: KeyType) {
-    super("Value does not match allowed options.", path)
+  public constructor(path: Path, { id, name, description }: Handler, options: Options) {
+    super("", path)
+    const type = description ? `${name} (${description})` : name
+    this.message = `${type} options do not contain the specified value.`
     this.details = {
       ...this.details,
-      options: this.formatOptions(options, keyType),
+      type: id,
+      options: this.formatOptions(options),
     }
   }
 
   /**
    * Returns formatted options.
    */
-  protected formatOptions(options: Options, keyType: KeyType): Keys | [number, string][] | Record<string, string> {
-    return Array.isArray(options)
-      ? options
-      : "number" === keyType
-        ? [...options.entries()] as [number, string][]
-        : [...options].reduce(
-          (items, [key, label]) => (items[key] = label, items),
-          {} as Record<string, string>
-        )
+  protected formatOptions(options: Options): Keys | [number, string][] | Record<string, string> {
+    return options instanceof Map
+      ? [...options.entries()] as [number, string][]
+      : options
   }
 
 }

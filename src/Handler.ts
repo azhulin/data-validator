@@ -17,19 +17,19 @@ import ErrorDataUnexpected from "./error/ErrorDataUnexpected"
 export default abstract class Handler {
 
   /**
-   * The user-faced ID of the data type.
+   * The ID of the data type.
    */
-  public abstract id: string
+  public abstract readonly id: string
 
   /**
    * The name of the data type.
    */
-  public abstract name: string
+  public abstract readonly name: string
 
   /**
    * The description of the data type.
    */
-  public description?: string
+  public readonly description?: string
 
   /**
    * The default data.

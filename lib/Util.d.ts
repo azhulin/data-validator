@@ -8,6 +8,10 @@ export declare const isString: (value: unknown) => boolean;
  */
 export declare const isObject: (value: unknown) => boolean;
 /**
+ * Determines whether the value is a number.
+ */
+export declare const isNumber: (value: unknown) => boolean;
+/**
  * Determines whether the value is an index.
  */
 export declare const isIndex: (value: unknown) => boolean;
