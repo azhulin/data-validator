@@ -10,6 +10,7 @@ export function set(data: unknown, path: Path, item: unknown): unknown {
   if (!path.length) {
     return item
   }
+  path = [...path]
   const last = path.pop()
   let value: any = data
   for (const key of path) {
