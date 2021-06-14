@@ -1,6 +1,6 @@
 import type { Context } from "../interface";
 export declare namespace Processor {
-    type Func = (data: unknown, context: Context) => unknown;
+    type Func = (data: any, context: Context) => unknown;
     type Library = Record<string, Func>;
 }
 /**

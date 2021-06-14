@@ -24,7 +24,7 @@ export abstract class Handler {
   /**
    * The description of the data type.
    */
-  public get description(): string { return }
+  public get description(): string { return "" }
 
   /**
    * The default data.
@@ -243,7 +243,7 @@ export abstract class Handler {
    * Runs processors on the data.
    */
   protected async run(type: "preprocessors" | "postprocessors", data: unknown, context: Context): Promise<unknown> {
-    for (let processor of [...this[type], ...this.custom[type]]) {
+    for (let processor of [...this[type], ...this.custom[type] ?? []]) {
       "string" === typeof processor
         && this.processorLibrary[processor]
         && (processor = this.processorLibrary[processor])
@@ -260,7 +260,7 @@ export abstract class Handler {
    */
   protected async checkConstraints(data: unknown, context: Context): Promise<void> {
     const constraints = []
-    for (const item of [...this.constraints, ...this.custom.constraints]) {
+    for (const item of [...this.constraints, ...this.custom.constraints ?? []]) {
       constraints.push(..."function" === typeof item ? item(context) : [item])
     }
     for (const item of constraints) {

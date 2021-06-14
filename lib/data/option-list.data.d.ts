@@ -30,14 +30,14 @@ export declare class Handler extends $List.Handler {
 }
 export declare function conf(config?: Config): {
     Handler: typeof Data.$OptionList.Handler;
-    input?: Data.Property<boolean, Data.Context>;
-    require?: Data.Property<boolean, Data.Context>;
-    default?: Partial<Data.Default>;
-    preprocessors?: Data.Processor[];
-    constraints?: Data.Constraint[];
-    postprocessors?: Data.Processor[];
-    key_type?: $Option.KeyType;
-    options?: $Option.Options;
-    preserve?: boolean;
+    input?: Data.Property<boolean, Data.Context> | undefined;
+    require?: Data.Property<boolean, Data.Context> | undefined;
+    default?: Partial<Data.Default> | undefined;
+    preprocessors?: Data.Processor[] | undefined;
+    constraints?: Data.Constraint[] | undefined;
+    postprocessors?: Data.Processor[] | undefined;
+    key_type?: $Option.KeyType | undefined;
+    options?: $Option.Options | undefined;
+    preserve?: boolean | undefined;
 };
 export declare function init(config?: Config): Data.$OptionList.Handler;

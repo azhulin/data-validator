@@ -28,11 +28,11 @@ export declare class Handler extends $Number.Handler {
 }
 export declare function conf(config?: Config): {
     Handler: typeof Data.$Integer.Handler;
-    input?: Data.Property<boolean, Data.Context>;
-    require?: Data.Property<boolean, Data.Context>;
-    default?: Partial<Data.Default>;
-    preprocessors?: Data.Processor[];
-    constraints?: Data.Constraint[];
-    postprocessors?: Data.Processor[];
+    input?: Data.Property<boolean, Data.Context> | undefined;
+    require?: Data.Property<boolean, Data.Context> | undefined;
+    default?: Partial<Data.Default> | undefined;
+    preprocessors?: Data.Processor[] | undefined;
+    constraints?: Data.Constraint[] | undefined;
+    postprocessors?: Data.Processor[] | undefined;
 };
 export declare function init(config?: Config): Data.$Integer.Handler;

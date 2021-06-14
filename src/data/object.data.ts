@@ -31,7 +31,7 @@ export class Handler extends Data.Handler {
   protected get preparedSchema(): Data.Schema {
     return this._preparedSchema ?? (this._preparedSchema = this.prepareSchema())
   }
-  private _preparedSchema: Data.Schema
+  private _preparedSchema?: Data.Schema
 
   /**
    * Whether to use default value, if all schema keys are optional and equal to Null.

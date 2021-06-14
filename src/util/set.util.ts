@@ -11,7 +11,7 @@ export function set(data: unknown, path: Path, item: unknown): unknown {
     return item
   }
   path = [...path]
-  const last = path.pop()
+  const last = path.pop()!
   let value: any = data
   for (const key of path) {
     if ("string" === typeof key && !isObject(value)

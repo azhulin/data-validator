@@ -18,7 +18,7 @@ export abstract class ErrorData extends Error {
   /**
    * The error details.
    */
-  public details: Record<string, unknown>
+  public details: Record<string, unknown> = {}
 
   /**
    * Constructor for the ErrorData object.
