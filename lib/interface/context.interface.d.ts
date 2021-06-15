@@ -1,5 +1,5 @@
-import type { BaseContext, Default } from ".";
-import type { Path } from "../type";
+import type { BaseContext } from ".";
+import type { Default, Path } from "../type";
 import type { Operation } from "../enum";
 /**
  * The data context.

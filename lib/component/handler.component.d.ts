@@ -1,5 +1,5 @@
-import type { Constraint, Path, Processor, Property } from "../type";
-import type { BaseContext, Context, Default, Definition, Settings } from "../interface";
+import type { Constraint, Default, Path, Processor, Property } from "../type";
+import type { BaseContext, Context, Definition, Settings } from "../interface";
 /**
  * The base data handler class.
  */

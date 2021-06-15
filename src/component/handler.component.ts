@@ -3,8 +3,8 @@ import { extract, pathResolve } from "../util"
 import { ErrorConstraint, ErrorEmpty, ErrorIgnored,
   ErrorRequired, ErrorType, ErrorUnexpected } from "../error"
 
-import type { Constraint, Path, Processor, Property } from "../type"
-import type { BaseContext, Context, Default, Definition, Settings } from "../interface"
+import type { Constraint, Default, Path, Processor, Property } from "../type"
+import type { BaseContext, Context, Definition, Settings } from "../interface"
 
 /**
  * The base data handler class.
@@ -31,6 +31,7 @@ export abstract class Handler {
    */
   protected default: Default = {
     value: null,
+    read: context => this.getValue(context.default.value, context),
     create: context => this.getValue(context.default.value, context),
     update: context => context.original() as any ?? context.default.value,
     integrate: context => this.getValue(context.default.update, context),
