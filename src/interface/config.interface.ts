@@ -1,5 +1,5 @@
-import type { Context } from "."
-import type { Constraint, Default, Processor, Property } from "../type"
+import type { Context, Default } from "."
+import type { Constraint, Processor, Property } from "../type"
 
 /**
  * The data handler configuration.
