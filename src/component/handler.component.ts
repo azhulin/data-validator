@@ -333,10 +333,10 @@ export abstract class Handler {
   }
 
   /**
-   * Returns the action-based default value.
+   * Returns the default value based on behavior.
    */
-  protected async getDefault(context: Context, action?: Operation | "nulled"): Promise<unknown> {
-    const property = this.default[action ?? context.operation]
+  protected async getDefault(context: Context, behavior?: keyof Default): Promise<unknown> {
+    const property = this.default[behavior ?? context.operation]
     return this.getValue(property, context)
   }
 

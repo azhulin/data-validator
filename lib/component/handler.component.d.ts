@@ -1,4 +1,3 @@
-import { Operation } from "../enum";
 import type { Constraint, Default, Path, Processor, Property } from "../type";
 import type { BaseContext, Context, Definition, Settings } from "../interface";
 /**
@@ -146,9 +145,9 @@ export declare abstract class Handler {
      */
     protected isRequired(context: Context): Promise<boolean>;
     /**
-     * Returns the action-based default value.
+     * Returns the default value based on behavior.
      */
-    protected getDefault(context: Context, action?: Operation | "nulled"): Promise<unknown>;
+    protected getDefault(context: Context, behavior?: keyof Default): Promise<unknown>;
     /**
      * Returns data handler dynamic context property value.
      */
