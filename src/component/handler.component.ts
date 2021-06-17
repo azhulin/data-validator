@@ -197,6 +197,7 @@ export abstract class Handler {
       update: false,
       integrate: false,
       [operation]: true,
+      handler: this,
       default: this.default,
       path: this.path,
       source: field =>

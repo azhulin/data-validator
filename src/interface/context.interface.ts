@@ -10,6 +10,7 @@ export interface Context extends BaseContext {
   create: boolean
   update: boolean
   integrate: boolean
+  handler: unknown
   default: Default
   path: Path
   source: (field?: string) => unknown
