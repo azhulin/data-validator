@@ -158,7 +158,7 @@ export abstract class Handler {
     }
     else if (this.isOmitted(data)) {
       const required = await this.isRequired(context)
-      if (required && !context.update) {
+      if (required && !context.update && !context.integrate) {
         throw new ErrorRequired(this.path)
       }
       data = await this.getDefault(context)
