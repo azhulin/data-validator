@@ -7,6 +7,7 @@ export interface Config {
     input?: Property<boolean, Context>;
     require?: Property<boolean, Context>;
     default?: Partial<Default>;
+    preparers?: Processor[];
     preprocessors?: Processor[];
     constraints?: Constraint[];
     postprocessors?: Processor[];

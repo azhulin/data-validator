@@ -60,8 +60,12 @@ export declare function conf(config: Config): {
     input?: Data.Property<boolean, Data.Context> | undefined;
     require?: Data.Property<boolean, Data.Context> | undefined;
     default?: Partial<Data.Default> | undefined;
+    preparers?: Data.Processor[] | undefined;
     preprocessors?: Data.Processor[] | undefined;
     constraints?: Data.Constraint[] | undefined;
+    /**
+     * {@inheritdoc}
+     */
     postprocessors?: Data.Processor[] | undefined;
     item: Data.Definition;
 };

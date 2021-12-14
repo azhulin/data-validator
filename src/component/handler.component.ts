@@ -49,6 +49,11 @@ export abstract class Handler {
   protected require: Property<boolean, Context> = true
 
   /**
+   * An array of data preparers.
+   */
+  protected preparers: Processor[] = []
+
+  /**
    * An array of data preprocessors.
    */
   protected preprocessors: Processor[] = []
@@ -64,9 +69,10 @@ export abstract class Handler {
   protected postprocessors: Processor[] = []
 
   /**
-   * Custom preprocessors, constraints, postprocessors.
+   * Custom preparers, preprocessors, constraints, postprocessors.
    */
   protected custom: {
+    preparers?: Processor[]
     preprocessors?: Processor[]
     constraints?: Constraint[]
     postprocessors?: Processor[]
@@ -114,6 +120,10 @@ export abstract class Handler {
     this.input = config.input ?? this.input
     this.require = config.require ?? this.require
     this.default = { ...this.default, ...config.default }
+    this.custom.preparers = [
+      ...this.custom.preparers ?? [],
+      ...config.preparers ?? [],
+    ]
     this.custom.preprocessors = [
       ...this.custom.preprocessors ?? [],
       ...config.preprocessors ?? [],
@@ -173,6 +183,7 @@ export abstract class Handler {
       data = await this.getDefault(context, "nulled")
     }
     if (!this.isEmpty(data) && !this.isOmitted(data)) {
+      data = await this.prepare(data, context)
       if (!this.isValid(data)) {
         throw new ErrorType(this.path, this)
       }
@@ -219,6 +230,13 @@ export abstract class Handler {
   }
 
   /**
+   * Prepares the data.
+   */
+  protected async prepare(data: unknown, context: Context): Promise<unknown> {
+    return this.run("preparers", data, context)
+  }
+
+  /**
    * Processes the data.
    */
   protected async process(data: unknown, context: Context): Promise<unknown> {
@@ -244,7 +262,7 @@ export abstract class Handler {
   /**
    * Runs processors on the data.
    */
-  protected async run(type: "preprocessors" | "postprocessors", data: unknown, context: Context): Promise<unknown> {
+  protected async run(type: "preparers" | "preprocessors" | "postprocessors", data: unknown, context: Context): Promise<unknown> {
     for (let processor of [...this[type], ...this.custom[type] ?? []]) {
       "string" === typeof processor
         && this.processorLibrary[processor]

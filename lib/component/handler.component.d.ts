@@ -29,6 +29,10 @@ export declare abstract class Handler {
      */
     protected require: Property<boolean, Context>;
     /**
+     * An array of data preparers.
+     */
+    protected preparers: Processor[];
+    /**
      * An array of data preprocessors.
      */
     protected preprocessors: Processor[];
@@ -41,9 +45,10 @@ export declare abstract class Handler {
      */
     protected postprocessors: Processor[];
     /**
-     * Custom preprocessors, constraints, postprocessors.
+     * Custom preparers, preprocessors, constraints, postprocessors.
      */
     protected custom: {
+        preparers?: Processor[];
         preprocessors?: Processor[];
         constraints?: Constraint[];
         postprocessors?: Processor[];
@@ -97,6 +102,10 @@ export declare abstract class Handler {
      */
     protected isValid(data: unknown): boolean;
     /**
+     * Prepares the data.
+     */
+    protected prepare(data: unknown, context: Context): Promise<unknown>;
+    /**
      * Processes the data.
      */
     protected process(data: unknown, context: Context): Promise<unknown>;
@@ -111,7 +120,7 @@ export declare abstract class Handler {
     /**
      * Runs processors on the data.
      */
-    protected run(type: "preprocessors" | "postprocessors", data: unknown, context: Context): Promise<unknown>;
+    protected run(type: "preparers" | "preprocessors" | "postprocessors", data: unknown, context: Context): Promise<unknown>;
     /**
      * Checks data constraints.
      */
