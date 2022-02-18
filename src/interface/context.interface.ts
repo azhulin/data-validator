@@ -1,17 +1,18 @@
 import type { BaseContext } from "."
-import type { Default, Path } from "../type"
+import type { Handler } from "../component"
 import type { Operation } from "../enum"
+import type { Default, Path } from "../type"
 
 /**
  * The data context.
  */
-export interface Context extends BaseContext {
+export interface Context<T> extends BaseContext<T> {
   operation: Operation
   create: boolean
   update: boolean
   integrate: boolean
-  handler: unknown
-  default: Default
+  handler: Handler
+  default: Default<T>
   path: Path
   source: (field?: string) => unknown
   result: (field?: string) => unknown

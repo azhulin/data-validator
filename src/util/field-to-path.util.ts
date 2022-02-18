@@ -13,5 +13,5 @@ export function fieldToPath(field?: string): Path {
     throw new ErrorUnexpected(`Unable to convert field to path, because specified field '${field}' is invalid.`)
   }
   return field.split(/(\.[^.\[]+|\[[^\]]+\])/).filter(item => item)
-    .map(item => "." === item[0] ? item.substr(1) : +item.substr(1, 1))
+    .map(item => "." === item[0] ? item.substring(1) : +item.substring(1, 1))
 }

@@ -1,20 +1,23 @@
 import * as Data from ".."
 
-export type Config = Data.Config & {
-  key_type?: KeyType
-  options?: Options
+type Type = number | string
+
+export namespace $Option {
+  export type Config<T extends Type = Type> = Data.Config<T> & {
+    key_type?: KeyType
+    options?: Options
+  }
+  export type KeyType = "number" | "string"
+  export type Keys<T = Type> = T[]
+  export type KeysLabelsNumber = Map<number, string>
+  export type KeysLabelsString = Record<string, string>
+  export type Options = Keys | KeysLabelsNumber | KeysLabelsString
 }
-export type Key = number | string
-export type KeyType = "number" | "string"
-export type Keys<T = Key> = T[]
-export type KeysLabelsNumber = Map<number, string>
-export type KeysLabelsString = Record<string, string>
-export type Options = Keys | KeysLabelsNumber | KeysLabelsString
 
 /**
  * The option data handler class.
  */
-export class Handler extends Data.Handler {
+export class $Option<T extends Type = Type> extends Data.Handler<T> {
 
   /**
    * {@inheritdoc}
@@ -31,19 +34,19 @@ export class Handler extends Data.Handler {
   /**
    * The options.
    */
-  protected options: Options = []
+  protected options: $Option.Options = []
 
   /**
    * The type of option keys.
    */
-  protected keyType: KeyType = "string"
+  protected keyType: $Option.KeyType = "string"
 
   /**
    * {@inheritdoc}
    */
-  public constructor(settings: Data.Settings) {
+  public constructor(settings: Data.Settings<T>) {
     super(settings)
-    const config: Config = settings.config ?? {}
+    const config = (settings.config ?? {}) as $Option.Config
     this.keyType = config.key_type ?? this.keyType
     this.options = config.options ?? this.options
     if (!this.optionKeys().every(key => this.isValidKeyType(key))) {
@@ -54,9 +57,9 @@ export class Handler extends Data.Handler {
   /**
    * {@inheritdoc}
    */
-  public async validate(data: unknown, baseContext?: Data.BaseContext): Promise<Key> {
+  public async validate(data: unknown, baseContext?: Data.BaseContext<T>): Promise<T> {
     try {
-      return await super.validate(data, baseContext) as Key
+      return await super.validate(data, baseContext)
     }
     catch (error) {
       if (error instanceof Data.ErrorType) {
@@ -70,7 +73,7 @@ export class Handler extends Data.Handler {
    * {@inheritdoc}
    */
   protected isValid(data: unknown): boolean {
-    return this.isValidKeyType(data) && this.optionKeys().includes(data as Key)
+    return this.isValidKeyType(data) && this.optionKeys().includes(data as T)
   }
 
   /**
@@ -89,14 +92,14 @@ export class Handler extends Data.Handler {
   /**
    * Returns option keys.
    */
-  protected optionKeys(): Keys {
-    return Handler.optionKeys(this.options)
+  protected optionKeys(): T[] {
+    return <unknown>$Option.optionKeys(this.options) as T[]
   }
 
   /**
    * Returns option keys.
    */
-  public static optionKeys(options: Options): Keys {
+  public static optionKeys(options: $Option.Options): $Option.Keys {
     return Array.isArray(options)
       ? options
       : options instanceof Map
@@ -104,7 +107,18 @@ export class Handler extends Data.Handler {
         : Object.keys(options)
   }
 
-}
+  /**
+   * Configures the data handler.
+   */
+  public static conf(config?: $Option.Config): Data.Definition {
+    return [$Option, config]
+  }
 
-export function conf(config?: Config) { return { ...config, Handler } }
-export function init(config?: Config) { return new Handler({ config }) }
+  /**
+   * Initializes the data handler.
+   */
+  public static init<T extends Type = Type>(config?: $Option.Config<T>): $Option<T> {
+    return new $Option<T>({ config })
+  }
+
+}

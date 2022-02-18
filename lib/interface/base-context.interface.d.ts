@@ -2,8 +2,8 @@ import type { Operation } from "../enum";
 /**
  * The base data context.
  */
-export interface BaseContext {
+export interface BaseContext<T> {
     operation?: Operation;
-    data?: unknown;
+    data?: T;
     [key: string]: unknown;
 }

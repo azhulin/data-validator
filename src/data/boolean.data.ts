@@ -1,11 +1,13 @@
 import * as Data from ".."
 
-export type Config = Data.Config
+export namespace $Boolean {
+  export type Config<T = boolean> = Data.Config<T>
+}
 
 /**
  * The boolean data handler class.
  */
-export class Handler extends Data.Handler {
+export class $Boolean<T = boolean> extends Data.Handler<T> {
 
   /**
    * {@inheritdoc}
@@ -24,7 +26,18 @@ export class Handler extends Data.Handler {
     return "boolean" === typeof data
   }
 
-}
+  /**
+   * Configures the data handler.
+   */
+  public static conf(config?: $Boolean.Config): Data.Definition {
+    return [$Boolean, config]
+  }
 
-export function conf(config?: Config) { return { ...config, Handler } }
-export function init(config?: Config) { return new Handler({ config }) }
+  /**
+   * Initializes the data handler.
+   */
+  public static init(config?: $Boolean.Config): $Boolean {
+    return new $Boolean({ config })
+  }
+
+}

@@ -1,18 +1,20 @@
 import * as Data from "..";
-export declare type Config = Data.Config & {
-    key_type?: KeyType;
-    options?: Options;
-};
-export declare type Key = number | string;
-export declare type KeyType = "number" | "string";
-export declare type Keys<T = Key> = T[];
-export declare type KeysLabelsNumber = Map<number, string>;
-export declare type KeysLabelsString = Record<string, string>;
-export declare type Options = Keys | KeysLabelsNumber | KeysLabelsString;
+declare type Type = number | string;
+export declare namespace $Option {
+    type Config<T extends Type = Type> = Data.Config<T> & {
+        key_type?: KeyType;
+        options?: Options;
+    };
+    type KeyType = "number" | "string";
+    type Keys<T = Type> = T[];
+    type KeysLabelsNumber = Map<number, string>;
+    type KeysLabelsString = Record<string, string>;
+    type Options = Keys | KeysLabelsNumber | KeysLabelsString;
+}
 /**
  * The option data handler class.
  */
-export declare class Handler extends Data.Handler {
+export declare class $Option<T extends Type = Type> extends Data.Handler<T> {
     /**
      * {@inheritdoc}
      */
@@ -24,19 +26,19 @@ export declare class Handler extends Data.Handler {
     /**
      * The options.
      */
-    protected options: Options;
+    protected options: $Option.Options;
     /**
      * The type of option keys.
      */
-    protected keyType: KeyType;
+    protected keyType: $Option.KeyType;
     /**
      * {@inheritdoc}
      */
-    constructor(settings: Data.Settings);
+    constructor(settings: Data.Settings<T>);
     /**
      * {@inheritdoc}
      */
-    validate(data: unknown, baseContext?: Data.BaseContext): Promise<Key>;
+    validate(data: unknown, baseContext?: Data.BaseContext<T>): Promise<T>;
     /**
      * {@inheritdoc}
      */
@@ -48,22 +50,18 @@ export declare class Handler extends Data.Handler {
     /**
      * Returns option keys.
      */
-    protected optionKeys(): Keys;
+    protected optionKeys(): T[];
     /**
      * Returns option keys.
      */
-    static optionKeys(options: Options): Keys;
+    static optionKeys(options: $Option.Options): $Option.Keys;
+    /**
+     * Configures the data handler.
+     */
+    static conf(config?: $Option.Config): Data.Definition;
+    /**
+     * Initializes the data handler.
+     */
+    static init<T extends Type = Type>(config?: $Option.Config<T>): $Option<T>;
 }
-export declare function conf(config?: Config): {
-    Handler: typeof Data.$Option.Handler;
-    input?: Data.Property<boolean, Data.Context> | undefined;
-    require?: Data.Property<boolean, Data.Context> | undefined;
-    default?: Partial<Data.Default> | undefined;
-    preparers?: Data.Processor[] | undefined;
-    preprocessors?: Data.Processor[] | undefined;
-    constraints?: Data.Constraint[] | undefined;
-    postprocessors?: Data.Processor[] | undefined;
-    key_type?: Data.$Option.KeyType | undefined;
-    options?: Data.$Option.Options | undefined;
-};
-export declare function init(config?: Config): Data.$Option.Handler;
+export {};

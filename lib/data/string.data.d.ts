@@ -1,9 +1,11 @@
 import * as Data from "..";
-export declare type Config = Data.Config;
+export declare namespace $String {
+    type Config<T = string> = Data.Config<T>;
+}
 /**
  * The string data handler class.
  */
-export declare class Handler extends Data.Handler {
+export declare class $String<T = string> extends Data.Handler<T> {
     /**
      * {@inheritdoc}
      */
@@ -15,11 +17,25 @@ export declare class Handler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
-    protected constraintLibrary: Data.Constraint.Library;
+    static constraint: {
+        trimmed: Data.Constraint<string>;
+        length: {
+            eq: (length: number) => Data.Constraint<string>;
+            gt: (length: number) => Data.Constraint<string>;
+            gte: (length: number) => Data.Constraint<string>;
+            lt: (length: number) => Data.Constraint<string>;
+            lte: (length: number) => Data.Constraint<string>;
+            neq: (length: number) => Data.Constraint<string>;
+        };
+    };
     /**
      * {@inheritdoc}
      */
-    protected processorLibrary: Data.Processor.Library;
+    static processor: {
+        trim: (data: string) => string;
+        lower: (data: string) => string;
+        upper: (data: string) => string;
+    };
     /**
      * {@inheritdoc}
      */
@@ -27,20 +43,13 @@ export declare class Handler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
-    protected process(data: string, context: Data.Context): Promise<string>;
+    protected process(data: T, context: Data.Context<T>): Promise<T>;
     /**
-     * {@inheritdoc}
+     * Configures the data handler.
      */
-    protected checkConstraint(constraint: string, data: string, context: Data.Context): Promise<Data.Constraint.Result>;
+    static conf(config?: $String.Config): Data.Definition;
+    /**
+     * Initializes the data handler.
+     */
+    static init(config?: $String.Config): $String;
 }
-export declare function conf(config?: Config): {
-    Handler: typeof Data.$String.Handler;
-    input?: Data.Property<boolean, Data.Context> | undefined;
-    require?: Data.Property<boolean, Data.Context> | undefined;
-    default?: Partial<Data.Default> | undefined;
-    preparers?: Data.Processor[] | undefined;
-    preprocessors?: Data.Processor[] | undefined;
-    constraints?: Data.Constraint[] | undefined;
-    postprocessors?: Data.Processor[] | undefined;
-};
-export declare function init(config?: Config): Data.$String.Handler;

@@ -1,14 +1,18 @@
 import * as Data from ".."
 
-export type Config = Data.Config & {
-  schema: Data.Schema
-  reduce?: boolean
+type Type = Record<string, any>
+
+export namespace $Object {
+  export type Config<T = Type> = Data.Config<T> & {
+    schema: Data.Schema
+    reduce?: boolean
+  }
 }
 
 /**
  * The object data handler class.
  */
-export class Handler extends Data.Handler {
+export class $Object<T = Type> extends Data.Handler<T> {
 
   /**
    * {@inheritdoc}
@@ -41,9 +45,9 @@ export class Handler extends Data.Handler {
   /**
    * {@inheritdoc}
    */
-  public constructor(settings: Data.Settings) {
+  public constructor(settings: Data.Settings<T>) {
     super(settings)
-    const config = (settings.config ?? {}) as Config
+    const config = (settings.config ?? {}) as $Object.Config<T>
     this.schema = config.schema ?? this.schema
     this.reduce = config.reduce ?? this.reduce
   }
@@ -65,10 +69,10 @@ export class Handler extends Data.Handler {
   /**
    * {@inheritdoc}
    */
-  protected async process(data: Record<string, unknown>, context: Data.Context): Promise<Record<string, unknown> | null> {
+  protected async process(data: Type, context: Data.Context<T>): Promise<T> {
     Object.keys(data).filter(key => !(key in this.preparedSchema))
       .forEach(key => this.warn(new Data.ErrorIgnored([...this.path, key])))
-    const result: Record<string, unknown> = {}
+    const result: Type = {}
     this.result = Data.set(this.result, this.path, result)
     for (const key of Object.keys(this.preparedSchema)) {
       result[key] = await this.getHandler(key).validate(data[key], context)
@@ -76,9 +80,9 @@ export class Handler extends Data.Handler {
     data = result
     if (this.reduce && Object.values(result).every(value => null === value)
         && !await this.isRequired(context)) {
-      data = await this.getDefault(context) as Record<string, unknown>
+      data = await this.getDefault(context)
     }
-    return super.process(data, context) as Promise<Record<string, unknown> | null>
+    return super.process(data, context)
   }
 
   /**
@@ -88,7 +92,18 @@ export class Handler extends Data.Handler {
     return this.initHandler(this.preparedSchema[key], [...this.path, key])
   }
 
-}
+  /**
+   * Configures the data handler.
+   */
+  public static conf(config?: $Object.Config): Data.Definition {
+    return [$Object, config]
+  }
 
-export function conf(config: Config) { return { ...config, Handler } }
-export function init(config: Config) { return new Handler({ config }) }
+  /**
+   * Initializes the data handler.
+   */
+  public static init<T = Type>(config?: $Object.Config<T>): $Object<T> {
+    return new $Object<T>({ config })
+  }
+
+}

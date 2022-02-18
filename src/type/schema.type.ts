@@ -1,4 +1,4 @@
-import type { Definition } from "../interface"
+import type { Definition } from "."
 
 /**
  * The data schema.

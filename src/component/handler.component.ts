@@ -1,15 +1,16 @@
 import { Operation } from "../enum"
+import {
+  ErrorConstraint, ErrorEmpty, ErrorIgnored, ErrorRequired, ErrorType, ErrorUnexpected,
+} from "../error"
 import { extract, pathResolve } from "../util"
-import { ErrorConstraint, ErrorEmpty, ErrorIgnored,
-  ErrorRequired, ErrorType, ErrorUnexpected } from "../error"
 
-import type { Constraint, Default, Path, Processor, Property } from "../type"
-import type { BaseContext, Context, Definition, Settings } from "../interface"
+import type { BaseContext, Context, Settings } from "../interface"
+import type { Constraint, Default, Definition, Path, Processor, Property } from "../type"
 
 /**
  * The base data handler class.
  */
-export abstract class Handler {
+export abstract class Handler<T = any> {
 
   /**
    * The ID of the data type.
@@ -27,13 +28,23 @@ export abstract class Handler {
   public get description(): string { return "" }
 
   /**
+   * A map of available data constraints.
+   */
+  public static constraint: Constraint.Library<any> = {}
+
+  /**
+   * A map of available data processors.
+   */
+  public static processor: Processor.Library<any> = {}
+
+  /**
    * The default data.
    */
-  protected default: Default = {
+  protected default: Default<T> = {
     value: null,
     read: context => this.getValue(context.default.value, context),
     create: context => this.getValue(context.default.value, context),
-    update: context => context.original() as any ?? context.default.value,
+    update: context => (context.original() ?? context.default.value) as null | T,
     integrate: context => this.getValue(context.default.update, context),
     nulled: context => this.getValue(context.default.create, context),
   }
@@ -41,52 +52,42 @@ export abstract class Handler {
   /**
    * Whether to accept the data from input.
    */
-  protected input: Property<boolean, Context> = true
+  protected input: Property<boolean, Context<T>> = true
 
   /**
    * Whether the data is required.
    */
-  protected require: Property<boolean, Context> = true
+  protected require: Property<boolean, Context<T>> = true
 
   /**
    * An array of data preparers.
    */
-  protected preparers: Processor[] = []
+  protected preparers: Processor<T>[] = []
 
   /**
    * An array of data preprocessors.
    */
-  protected preprocessors: Processor[] = []
+  protected preprocessors: Processor<T>[] = []
 
   /**
    * An array of data constraints.
    */
-  protected constraints: Constraint[] = []
+  protected constraints: Constraint.List<T> = []
 
   /**
    * An array of data postprocessors.
    */
-  protected postprocessors: Processor[] = []
+  protected postprocessors: Processor<T>[] = []
 
   /**
    * Custom preparers, preprocessors, constraints, postprocessors.
    */
   protected custom: {
-    preparers?: Processor[]
-    preprocessors?: Processor[]
-    constraints?: Constraint[]
-    postprocessors?: Processor[]
+    preparers?: Processor<T>[]
+    preprocessors?: Processor<T>[]
+    constraints?: Constraint.List<T>
+    postprocessors?: Processor<T>[]
   } = {}
-
-  /**
-   * A map of available data constraints.
-   */
-  protected constraintLibrary: Constraint.Library = {}
-
-  /**
-   * A map of available data processors.
-   */
-  protected processorLibrary: Processor.Library = {}
 
   /**
    * The path of the data in the data tree.
@@ -116,7 +117,7 @@ export abstract class Handler {
   /**
    * Constructor for the Handler object.
    */
-  public constructor({ config = {}, path, source, result, storage, warnings }: Settings) {
+  public constructor({ config = {}, path, source, result, storage, warnings }: Settings<T>) {
     this.input = config.input ?? this.input
     this.require = config.require ?? this.require
     this.default = { ...this.default, ...config.default }
@@ -158,7 +159,7 @@ export abstract class Handler {
   /**
    * Returns validated data.
    */
-  public async validate(data: unknown, baseContext?: BaseContext): Promise<unknown> {
+  public async validate(data: unknown, baseContext?: BaseContext<T>): Promise<T> {
     this.reset(data)
     const context = await this.getContext(baseContext)
     if (!await this.isInputable(context)) {
@@ -189,13 +190,13 @@ export abstract class Handler {
       }
       data = await this.process(data, context)
     }
-    return data
+    return data as T
   }
 
   /**
    * Returns the context.
    */
-  protected async getContext(context?: BaseContext): Promise<Context> {
+  protected async getContext(context?: BaseContext<T>): Promise<Context<T>> {
     const { create, update, integrate } = Operation
     const { operation = create, data } = context ?? {}
     if ([update, integrate].includes(operation) && !data) {
@@ -211,12 +212,9 @@ export abstract class Handler {
       handler: this,
       default: this.default,
       path: this.path,
-      source: field =>
-        extract(this.source, pathResolve(this.path, field)),
-      result: field =>
-        extract(this.result, pathResolve(this.path, field)),
-      original: field =>
-        extract(data, pathResolve(this.path, field)),
+      source: field => extract(this.source, pathResolve(this.path, field)),
+      result: field => extract(this.result, pathResolve(this.path, field)),
+      original: field => extract(data, pathResolve(this.path, field)),
       storage: (key, value?) =>
         undefined !== value ? this.storage[key] = value : this.storage[key],
     }
@@ -232,14 +230,14 @@ export abstract class Handler {
   /**
    * Prepares the data.
    */
-  protected async prepare(data: unknown, context: Context): Promise<unknown> {
+  protected async prepare(data: unknown, context: Context<T>): Promise<unknown> {
     return this.run("preparers", data, context)
   }
 
   /**
    * Processes the data.
    */
-  protected async process(data: unknown, context: Context): Promise<unknown> {
+  protected async process(data: any, context: Context<T>): Promise<T> {
     data = await this.preprocess(data, context)
     await this.checkConstraints(data, context)
     return this.postprocess(data, context)
@@ -248,66 +246,47 @@ export abstract class Handler {
   /**
    * Runs data preprocessors.
    */
-  protected async preprocess(data: unknown, context: Context): Promise<unknown> {
+  protected async preprocess(data: T, context: Context<T>): Promise<T> {
     return this.run("preprocessors", data, context)
   }
 
   /**
    * Runs data postprocessors.
    */
-  protected async postprocess(data: unknown, context: Context): Promise<unknown> {
-    return this.run("postprocessors", data, context)
+  protected async postprocess(data: T, context: Context<T>): Promise<T> {
+    return this.run("postprocessors", data, context) as Promise<T>
   }
 
   /**
    * Runs processors on the data.
    */
-  protected async run(type: "preparers" | "preprocessors" | "postprocessors", data: unknown, context: Context): Promise<unknown> {
+  protected async run(type: "preparers" | "preprocessors" | "postprocessors", data: unknown, context: Context<T>): Promise<T> {
     for (let processor of [...this[type], ...this.custom[type] ?? []]) {
-      "string" === typeof processor
-        && this.processorLibrary[processor]
-        && (processor = this.processorLibrary[processor])
-      if ("function" !== typeof processor) {
-        throw new ErrorUnexpected(`${this.name} processor '${processor}' is invalid.`)
-      }
       data = await processor(data, context)
     }
-    return data
+    return data as T
   }
 
   /**
    * Checks data constraints.
    */
-  protected async checkConstraints(data: unknown, context: Context): Promise<void> {
+  protected async checkConstraints(data: T, context: Context<T>): Promise<void> {
     const constraints = []
     for (const item of [...this.constraints, ...this.custom.constraints ?? []]) {
       constraints.push(..."function" === typeof item ? item(context) : [item])
     }
-    for (const item of constraints) {
-      const [constraint, func] = ("string" === typeof item ? [item] : item)
+    for (const [id, func, runOnUpdate = false] of constraints) {
       const { update, original } = context
       // Allows to skip constraint validation on update with unchanged value.
-      if ("?" === constraint[0] && update && data === original()) {
+      if (!runOnUpdate && update && data === original()) {
         continue
       }
-      const id = constraint.replace(/^\?/, "")
-      const result = func
-        ? await func(data, context)
-        : this.constraintLibrary[id]
-          ? await this.constraintLibrary[id](data, context)
-          : await this.checkConstraint(id, data, context)
+      const result = await func(data, context)
       if (null !== result) {
         const [message, details] = "string" === typeof result ? [result] : result
         throw new ErrorConstraint(message, this.path, this.id, id, details)
       }
     }
-  }
-
-  /**
-   * Checks a data constraint.
-   */
-  protected async checkConstraint(constraint: string, data: unknown, context: Context): Promise<Constraint.Result> {
-    throw new ErrorUnexpected(`${this.name} constraint '${constraint}' is invalid.`)
   }
 
   /**
@@ -341,51 +320,51 @@ export abstract class Handler {
   /**
    * Returns "input" flag value.
    */
-  protected async isInputable(context: Context): Promise<boolean> {
+  protected async isInputable(context: Context<T>): Promise<boolean> {
     return this.getProperty<boolean>("input", context)
   }
 
   /**
    * Returns "require" flag value.
    */
-  protected async isRequired(context: Context): Promise<boolean> {
+  protected async isRequired(context: Context<T>): Promise<boolean> {
     return this.getProperty<boolean>("require", context)
   }
 
   /**
    * Returns the default value based on behavior.
    */
-  protected async getDefault(context: Context, behavior?: keyof Default): Promise<unknown> {
+  protected async getDefault(context: Context<T>, behavior?: keyof Default<T>): Promise<T> {
     const property = this.default[behavior ?? context.operation]
-    return this.getValue(property, context)
+    return this.getValue(property, context) as Promise<T>
   }
 
   /**
    * Returns data handler dynamic context property value.
    */
-  protected async getProperty<T = unknown>(key: string, context: Context): Promise<T> {
-    return this.getValue<T>((this as any)[key], context)
+  protected async getProperty<P = unknown>(key: string, context: Context<T>): Promise<P> {
+    return this.getValue<P>((this as any)[key], context)
   }
 
   /**
    * Returns dynamic context property value.
    */
-  protected async getValue<T = unknown, C = Context>(property: Property<T, C>, context: C): Promise<T> {
+  protected async getValue<P = unknown, C = Context<T>>(property: Property<P, C>, context: C): Promise<P> {
     return "function" === typeof property
-      ? (property as Property.Dynamic<T, C>)(context)
-      : property as Property.Static<T>
+      ? (property as Property.Dynamic<P, C>)(context)
+      : property as Property.Static<P>
   }
 
   /**
    * Returns the data handler for specified data definition.
    */
   protected initHandler(definition: Definition, path: Path): Handler {
-    const { Handler, ...config } = definition
+    const [handler, config] = Array.isArray(definition) ? definition : [definition, {}]
     const { source, result, storage, warnings } = this
-    const settings: Settings = {
+    const settings: Settings<T> = {
       config, path, source, result, storage, warnings,
     }
-    return new Handler(settings)
+    return new handler(settings)
   }
 
   /**

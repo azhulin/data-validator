@@ -1,9 +1,9 @@
-import type { Constraint, Default, Path, Processor, Property } from "../type";
-import type { BaseContext, Context, Definition, Settings } from "../interface";
+import type { BaseContext, Context, Settings } from "../interface";
+import type { Constraint, Default, Definition, Path, Processor, Property } from "../type";
 /**
  * The base data handler class.
  */
-export declare abstract class Handler {
+export declare abstract class Handler<T = any> {
     /**
      * The ID of the data type.
      */
@@ -17,50 +17,50 @@ export declare abstract class Handler {
      */
     get description(): string;
     /**
+     * A map of available data constraints.
+     */
+    static constraint: Constraint.Library<any>;
+    /**
+     * A map of available data processors.
+     */
+    static processor: Processor.Library<any>;
+    /**
      * The default data.
      */
-    protected default: Default;
+    protected default: Default<T>;
     /**
      * Whether to accept the data from input.
      */
-    protected input: Property<boolean, Context>;
+    protected input: Property<boolean, Context<T>>;
     /**
      * Whether the data is required.
      */
-    protected require: Property<boolean, Context>;
+    protected require: Property<boolean, Context<T>>;
     /**
      * An array of data preparers.
      */
-    protected preparers: Processor[];
+    protected preparers: Processor<T>[];
     /**
      * An array of data preprocessors.
      */
-    protected preprocessors: Processor[];
+    protected preprocessors: Processor<T>[];
     /**
      * An array of data constraints.
      */
-    protected constraints: Constraint[];
+    protected constraints: Constraint.List<T>;
     /**
      * An array of data postprocessors.
      */
-    protected postprocessors: Processor[];
+    protected postprocessors: Processor<T>[];
     /**
      * Custom preparers, preprocessors, constraints, postprocessors.
      */
     protected custom: {
-        preparers?: Processor[];
-        preprocessors?: Processor[];
-        constraints?: Constraint[];
-        postprocessors?: Processor[];
+        preparers?: Processor<T>[];
+        preprocessors?: Processor<T>[];
+        constraints?: Constraint.List<T>;
+        postprocessors?: Processor<T>[];
     };
-    /**
-     * A map of available data constraints.
-     */
-    protected constraintLibrary: Constraint.Library;
-    /**
-     * A map of available data processors.
-     */
-    protected processorLibrary: Processor.Library;
     /**
      * The path of the data in the data tree.
      */
@@ -84,7 +84,7 @@ export declare abstract class Handler {
     /**
      * Constructor for the Handler object.
      */
-    constructor({ config, path, source, result, storage, warnings }: Settings);
+    constructor({ config, path, source, result, storage, warnings }: Settings<T>);
     /**
      * Resets the handler state.
      */
@@ -92,11 +92,11 @@ export declare abstract class Handler {
     /**
      * Returns validated data.
      */
-    validate(data: unknown, baseContext?: BaseContext): Promise<unknown>;
+    validate(data: unknown, baseContext?: BaseContext<T>): Promise<T>;
     /**
      * Returns the context.
      */
-    protected getContext(context?: BaseContext): Promise<Context>;
+    protected getContext(context?: BaseContext<T>): Promise<Context<T>>;
     /**
      * Determines whether the data is valid.
      */
@@ -104,31 +104,27 @@ export declare abstract class Handler {
     /**
      * Prepares the data.
      */
-    protected prepare(data: unknown, context: Context): Promise<unknown>;
+    protected prepare(data: unknown, context: Context<T>): Promise<unknown>;
     /**
      * Processes the data.
      */
-    protected process(data: unknown, context: Context): Promise<unknown>;
+    protected process(data: any, context: Context<T>): Promise<T>;
     /**
      * Runs data preprocessors.
      */
-    protected preprocess(data: unknown, context: Context): Promise<unknown>;
+    protected preprocess(data: T, context: Context<T>): Promise<T>;
     /**
      * Runs data postprocessors.
      */
-    protected postprocess(data: unknown, context: Context): Promise<unknown>;
+    protected postprocess(data: T, context: Context<T>): Promise<T>;
     /**
      * Runs processors on the data.
      */
-    protected run(type: "preparers" | "preprocessors" | "postprocessors", data: unknown, context: Context): Promise<unknown>;
+    protected run(type: "preparers" | "preprocessors" | "postprocessors", data: unknown, context: Context<T>): Promise<T>;
     /**
      * Checks data constraints.
      */
-    protected checkConstraints(data: unknown, context: Context): Promise<void>;
-    /**
-     * Checks a data constraint.
-     */
-    protected checkConstraint(constraint: string, data: unknown, context: Context): Promise<Constraint.Result>;
+    protected checkConstraints(data: T, context: Context<T>): Promise<void>;
     /**
      * Determines whether the value is present in source data.
      */
@@ -148,23 +144,23 @@ export declare abstract class Handler {
     /**
      * Returns "input" flag value.
      */
-    protected isInputable(context: Context): Promise<boolean>;
+    protected isInputable(context: Context<T>): Promise<boolean>;
     /**
      * Returns "require" flag value.
      */
-    protected isRequired(context: Context): Promise<boolean>;
+    protected isRequired(context: Context<T>): Promise<boolean>;
     /**
      * Returns the default value based on behavior.
      */
-    protected getDefault(context: Context, behavior?: keyof Default): Promise<unknown>;
+    protected getDefault(context: Context<T>, behavior?: keyof Default<T>): Promise<T>;
     /**
      * Returns data handler dynamic context property value.
      */
-    protected getProperty<T = unknown>(key: string, context: Context): Promise<T>;
+    protected getProperty<P = unknown>(key: string, context: Context<T>): Promise<P>;
     /**
      * Returns dynamic context property value.
      */
-    protected getValue<T = unknown, C = Context>(property: Property<T, C>, context: C): Promise<T>;
+    protected getValue<P = unknown, C = Context<T>>(property: Property<P, C>, context: C): Promise<P>;
     /**
      * Returns the data handler for specified data definition.
      */

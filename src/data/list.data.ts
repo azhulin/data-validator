@@ -1,13 +1,17 @@
 import * as Data from ".."
 
-export type Config = Data.Config & {
-  item: Data.Definition
+type Type = any[]
+
+export namespace $List {
+  export type Config<T extends Type = Type> = Data.Config<T> & {
+    item: Data.Definition
+  }
 }
 
 /**
  * The list data handler class.
  */
-export class Handler extends Data.Handler {
+export class $List<T extends Type = Type> extends Data.Handler<T> {
 
   /**
    * {@inheritdoc}
@@ -22,26 +26,55 @@ export class Handler extends Data.Handler {
   /**
    * {@inheritdoc}
    */
-  protected default: Data.Default = {
+  protected default: Data.Default<T> = {
     ...this.default,
-    value: this.default.value ?? [],
+    value: (this.default.value ?? []) as T,
   }
 
   /**
    * {@inheritdoc}
    */
-  protected constraintLibrary: Data.Constraint.Library = {
-    ...this.constraintLibrary,
-    unique: (data: unknown[]) => {
-      const items = new Set()
-      for (const [index, item] of data.map(i => JSON.stringify(i)).entries()) {
-        if (items.has(item)) {
-          return [`Values are not unique.`, { index }]
-        }
-        items.add(item)
-      }
-      return null
+  public static constraint = {
+    ...Data.Handler.constraint,
+    length: {
+      eq: (length: number): Data.Constraint<Type> => [
+        `length=${length}`,
+        data => data.length === length ? null : `Length should be equal to ${length}.`,
+      ],
+      gt: (length: number): Data.Constraint<Type> => [
+        `length>${length}`,
+        data => data.length > length ? null : `Length should be greater than ${length}.`,
+      ],
+      gte: (length: number): Data.Constraint<Type> => [
+        `length>=${length}`,
+        data => data.length >= length ? null : `Length should be greater than or equal to ${length}.`,
+      ],
+      lt: (length: number): Data.Constraint<Type> => [
+        `length<${length}`,
+        data => data.length < length ? null : `Length should be lesser than ${length}.`,
+      ],
+      lte: (length: number): Data.Constraint<Type> => [
+        `length<=${length}`,
+        data => data.length <= length ? null : `Length should be lesser than or equal to ${length}.`,
+      ],
+      neq: (length: number): Data.Constraint<Type> => [
+        `length<>${length}`,
+        data => data.length !== length ? null : `Length should not be equal to ${length}.`,
+      ],
     },
+    unique: <Data.Constraint<Type>>[
+      "unique",
+      data => {
+        const items = new Set()
+        for (const [index, item] of data.map(i => JSON.stringify(i)).entries()) {
+          if (items.has(item)) {
+            return [`Values are not unique.`, { index }]
+          }
+          items.add(item)
+        }
+        return null
+      }
+    ],
   }
 
   /**
@@ -62,11 +95,11 @@ export class Handler extends Data.Handler {
   /**
    * {@inheritdoc}
    */
-  public constructor(settings: Data.Settings) {
+  public constructor(settings: Data.Settings<T>) {
     super(settings)
-    const config = (settings.config ?? {}) as Config
+    const config = (settings.config ?? {}) as $List.Config
     if (!config.item) {
-      throw new Data.ErrorUnexpected(`${this.name} configuration is invalid. Missing 'item' property.`)
+      throw new Data.ErrorUnexpected(`List configuration is invalid. Missing 'item' property.`)
     }
     this.item = config.item
     const { id, name } = this.getHandler()
@@ -84,55 +117,13 @@ export class Handler extends Data.Handler {
   /**
    * {@inheritdoc}
    */
-  protected async checkConstraint(constraint: string, data: unknown[], context: Data.Context): Promise<Data.Constraint.Result> {
-    const matches = constraint.match(/^length(=|>|>=|<|<=|<>)(\d+)$/)
-    if (matches) {
-      const length = +matches[2]
-      switch (matches[1]) {
-        case "=":
-          return data.length === length
-            ? null
-            : `Length should be equal to ${length}.`
-
-        case ">":
-          return data.length > length
-            ? null
-            : `Length should be greater than ${length}.`
-
-        case ">=":
-          return data.length >= length
-            ? null
-            : `Length should be greater than or equal to ${length}.`
-
-        case "<":
-          return data.length < length
-            ? null
-            : `Length should be lesser than ${length}.`
-
-        case "<=":
-          return data.length <= length
-            ? null
-            : `Length should be lesser than or equal to ${length}.`
-
-        case "<>":
-          return data.length !== length
-            ? null
-            : `Length should not be equal to ${length}.`
-      }
-    }
-    return super.checkConstraint(constraint, data, context)
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected async process(data: unknown[], context: Data.Context): Promise<unknown[]> {
+  protected async process(data: unknown[], context: Data.Context<T>): Promise<T> {
     const result: unknown[] = []
-    this.result = Data.set(this.result, this.path, result)
+    this.result = Data.set(this.result, this.path, result) as T
     for (const [index, item] of data.entries()) {
       result[index] = await this.getHandler(index).validate(item, context)
     }
-    return super.process(result, context) as Promise<unknown[]>
+    return super.process(result, context)
   }
 
   /**
@@ -142,7 +133,18 @@ export class Handler extends Data.Handler {
     return this.initHandler(this.item, [...this.path, index ?? "#"])
   }
 
-}
+  /**
+   * Configures the data handler.
+   */
+  public static conf(config?: $List.Config): Data.Definition {
+    return [$List, config]
+  }
 
-export function conf(config: Config) { return { ...config, Handler } }
-export function init(config: Config) { return new Handler({ config }) }
+  /**
+   * Initializes the data handler.
+   */
+  public static init<T extends Type = Type>(config?: $List.Config<T>): $List<T> {
+    return new $List<T>({ config })
+  }
+
+}

@@ -1,7 +1,7 @@
-import { ErrorExpected } from "./expected.error";
+import { ErrorExpected } from ".";
 import type { Handler } from "../component";
 import type { Path } from "../type";
-import type { Keys, Options } from "../data/option.data";
+import type { $Option } from "../data";
 /**
  * The data option error.
  */
@@ -13,9 +13,9 @@ export declare class ErrorOption extends ErrorExpected {
     /**
      * Constructor for the ErrorOption object.
      */
-    constructor(path: Path, { id, name, description }: Handler, options: Options);
+    constructor(path: Path, { id, name, description }: Handler, options: $Option.Options);
     /**
      * Returns formatted options.
      */
-    protected formatOptions(options: Options): Keys | [number, string][] | Record<string, string>;
+    protected formatOptions(options: $Option.Options): $Option.Keys | [number, string][] | Record<string, string>;
 }

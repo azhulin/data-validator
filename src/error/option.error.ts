@@ -1,8 +1,8 @@
-import { ErrorExpected } from "./expected.error"
+import { ErrorExpected } from "."
 
 import type { Handler } from "../component"
 import type { Path } from "../type"
-import type { Keys, Options } from "../data/option.data"
+import type { $Option } from "../data"
 
 /**
  * The data option error.
@@ -17,7 +17,7 @@ export class ErrorOption extends ErrorExpected {
   /**
    * Constructor for the ErrorOption object.
    */
-  public constructor(path: Path, { id, name, description }: Handler, options: Options) {
+  public constructor(path: Path, { id, name, description }: Handler, options: $Option.Options) {
     super("", path)
     const type = description ? `${name} (${description})` : name
     this.message = `${type} options do not contain the specified value.`
@@ -31,7 +31,7 @@ export class ErrorOption extends ErrorExpected {
   /**
    * Returns formatted options.
    */
-  protected formatOptions(options: Options): Keys | [number, string][] | Record<string, string> {
+  protected formatOptions(options: $Option.Options): $Option.Keys | [number, string][] | Record<string, string> {
     return options instanceof Map
       ? [...options.entries()] as [number, string][]
       : options

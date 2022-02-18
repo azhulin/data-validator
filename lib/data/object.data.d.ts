@@ -1,12 +1,15 @@
 import * as Data from "..";
-export declare type Config = Data.Config & {
-    schema: Data.Schema;
-    reduce?: boolean;
-};
+declare type Type = Record<string, any>;
+export declare namespace $Object {
+    type Config<T = Type> = Data.Config<T> & {
+        schema: Data.Schema;
+        reduce?: boolean;
+    };
+}
 /**
  * The object data handler class.
  */
-export declare class Handler extends Data.Handler {
+export declare class $Object<T = Type> extends Data.Handler<T> {
     /**
      * {@inheritdoc}
      */
@@ -31,7 +34,7 @@ export declare class Handler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
-    constructor(settings: Data.Settings);
+    constructor(settings: Data.Settings<T>);
     /**
      * Prepares the schema.
      */
@@ -43,22 +46,18 @@ export declare class Handler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
-    protected process(data: Record<string, unknown>, context: Data.Context): Promise<Record<string, unknown> | null>;
+    protected process(data: Type, context: Data.Context<T>): Promise<T>;
     /**
      * Returns data handler.
      */
     protected getHandler(key: string): Data.Handler;
+    /**
+     * Configures the data handler.
+     */
+    static conf(config?: $Object.Config): Data.Definition;
+    /**
+     * Initializes the data handler.
+     */
+    static init<T = Type>(config?: $Object.Config<T>): $Object<T>;
 }
-export declare function conf(config: Config): {
-    Handler: typeof Data.$Object.Handler;
-    input?: Data.Property<boolean, Data.Context> | undefined;
-    require?: Data.Property<boolean, Data.Context> | undefined;
-    default?: Partial<Data.Default> | undefined;
-    preparers?: Data.Processor[] | undefined;
-    preprocessors?: Data.Processor[] | undefined;
-    constraints?: Data.Constraint[] | undefined;
-    postprocessors?: Data.Processor[] | undefined;
-    schema: Data.Schema;
-    reduce?: boolean | undefined;
-};
-export declare function init(config: Config): Data.$Object.Handler;
+export {};

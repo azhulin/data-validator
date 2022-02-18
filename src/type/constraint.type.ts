@@ -1,15 +1,15 @@
 import type { Context } from "../interface"
 
-export namespace Constraint {
-  export type Error = string | [string, Record<string, unknown>?]
-  export type Result = Error | null
-  export type Func = (data: any, context: Context) => Result | Promise<Result>
-  export type Library = Record<string, Func>
-  export type Static = string | [string, Func]
-  export type Dynamic = (context: Context) => Static[]
-}
-
 /**
  * The data constraint.
  */
-export type Constraint = Constraint.Static | Constraint.Dynamic
+export type Constraint<T> = [string, Constraint.Func<T>, boolean?]
+
+export namespace Constraint {
+  export type Error = string | [string, Record<string, unknown>]
+  export type Result = null | Error
+  export type Func<T> = (data: T, context: Context<T>) => Result | Promise<Result>
+  export type Library<T> = { [key: string]: Constraint<T> | ((...args: any) => Constraint<T>) | Library<T> }
+  export type Dynamic<T> = (context: Context<T>) => Constraint<T>[]
+  export type List<T = any> = (Constraint<T> | Dynamic<T>)[]
+}

@@ -1,9 +1,11 @@
 import * as Data from "..";
-export declare type Config = Data.Config;
+export declare namespace $Timestamp {
+    type Config<T = number> = Data.Config<T>;
+}
 /**
  * The timestamp data handler class.
  */
-export declare class Handler extends Data.Handler {
+export declare class $Timestamp<T = number> extends Data.Handler<T> {
     /**
      * {@inheritdoc}
      */
@@ -19,20 +21,20 @@ export declare class Handler extends Data.Handler {
     /**
      * {@inheritdoc}
      */
-    protected constraintLibrary: Data.Constraint.Library;
+    static constraint: {
+        future: Data.Constraint<number>;
+        past: Data.Constraint<number>;
+    };
     /**
      * {@inheritdoc}
      */
     protected isValid(data: unknown): boolean;
+    /**
+     * Configures the data handler.
+     */
+    static conf(config?: $Timestamp.Config): Data.Definition;
+    /**
+     * Initializes the data handler.
+     */
+    static init(config?: $Timestamp.Config): $Timestamp;
 }
-export declare function conf(config?: Config): {
-    Handler: typeof Data.$Timestamp.Handler;
-    input?: Data.Property<boolean, Data.Context> | undefined;
-    require?: Data.Property<boolean, Data.Context> | undefined;
-    default?: Partial<Data.Default> | undefined;
-    preparers?: Data.Processor[] | undefined;
-    preprocessors?: Data.Processor[] | undefined;
-    constraints?: Data.Constraint[] | undefined;
-    postprocessors?: Data.Processor[] | undefined;
-};
-export declare function init(config?: Config): Data.$Timestamp.Handler;

@@ -1,4 +1,4 @@
-import { ErrorExpected } from "./expected.error"
+import { ErrorExpected } from "."
 
 import type { Handler } from "../component"
 import type { Path } from "../type"

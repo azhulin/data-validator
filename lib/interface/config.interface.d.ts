@@ -1,14 +1,14 @@
-import type { Context } from ".";
-import type { Constraint, Default, Processor, Property } from "../type";
+import { Context } from ".";
+import { Constraint, Default, Processor, Property } from "../type";
 /**
  * The data handler configuration.
  */
-export interface Config {
-    input?: Property<boolean, Context>;
-    require?: Property<boolean, Context>;
-    default?: Partial<Default>;
-    preparers?: Processor[];
-    preprocessors?: Processor[];
-    constraints?: Constraint[];
-    postprocessors?: Processor[];
+export interface Config<T> {
+    input?: Property<boolean, Context<T>>;
+    require?: Property<boolean, Context<T>>;
+    default?: Partial<Default<T>>;
+    preparers?: Processor<T>[];
+    preprocessors?: Processor<T>[];
+    constraints?: Constraint.List<T>;
+    postprocessors?: Processor<T>[];
 }
